@@ -1,0 +1,63 @@
+BasedOnStyle: Google
+IndentWidth: 4
+
+AlignAfterOpenBracket: false
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: true
+AlignConsecutiveBitFields: true
+AlignConsecutiveMacros: true
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCaseColons: false
+AlignTrailingComments: true
+
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLambdasOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: true
+
+AlwaysBreakBeforeMultilineStrings: true
+
+BitFieldColonSpacing: Both
+
+BracedInitializerIndentWidth: 4
+
+BreakAdjacentStringLiterals: true
+BreakBeforeBinaryOperators: All
+BreakInheritanceList: BeforeComma
+BreakStringLiterals: true
+BreakTemplateDeclarations: Yes
+
+ColumnLimit: 80
+
+CompactNamespaces: true
+
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
+
+FixNamespaceComments: true
+
+IncludeBlocks: Regroup
+
+IndentRequiresClause: true
+
+LambdaBodyIndentation: Signature
+
+MaxEmptyLinesToKeep: 1
+
+PackConstructorInitializers: CurrentLine
+
+QualifierAlignment: Left
+ReferenceAlignment: Left
+
+SpaceAfterOperatorKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpacesBeforeTrailingComments: 1
+
+Standard: Latest
