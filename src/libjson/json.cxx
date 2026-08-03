@@ -1,6 +1,7 @@
 #include "libjson/json.hxx"
 
 #include <cassert>
+#include <sstream>
 
 #include "libjson/parse_error.hxx"
 
@@ -81,5 +82,21 @@ auto _parse(std::istream& is) -> json {
     else if (is.peek() == '[')
         return _parse_array(is);
     return _parse_value(is);
+}
+
+auto load(std::string_view raw) -> json {
+    return load(std::stringstream {raw.data()});
+}
+
+auto load(std::istream&& is) -> json {
+    if (!is) throw std::runtime_error("Invalid stream provided");
+
+    const auto ret {_parse(is)};
+
+    _skipws(is);
+    if (!is.eof())
+        throw parse_error("Only a single value expected at root level");
+
+    return ret;
 }
 } // namespace libjson

@@ -30,6 +30,20 @@ using object_t = std::unordered_map<std::string, json>;
 using value_t = std::variant<bool, int, double, std::shared_ptr<std::string>,
     std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
 
+/**
+ * @brief Load a json from raw string
+ *
+ * @param raw The input raw json
+ */
+auto load(std::string_view raw) -> json;
+
+/**
+ * @brief Load a json from stream
+ *
+ * @param is The input stream
+ */
+auto load(std::istream&& is) -> json;
+
 // ----------------------------------------------------------------------------
 
 class json final {
