@@ -62,8 +62,6 @@ auto main(int, char**) -> int {
     }
     )"
 
-    reader r {ss};
-
     ...
 
     return 0;
