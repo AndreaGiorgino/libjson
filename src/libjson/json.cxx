@@ -39,4 +39,10 @@ auto _parse_array(std::istream& is) -> json;
  * @param is The input stream
  */
 auto _parse_value(std::istream& is) -> json;
+
+// ----------------------------------------------------------------------------
+
+auto json::has_value(void) const noexcept -> bool {
+    return _hasValue;
+}
 } // namespace libjson
