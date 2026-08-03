@@ -45,4 +45,41 @@ auto _parse_value(std::istream& is) -> json;
 auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }
+
+auto _skipws(std::istream& is) noexcept -> void {
+    while (!is.eof() && std::isspace(is.peek())) is.ignore();
+}
+
+auto _parse_object(std::istream& is) -> json {
+    assert(is.peek() == '{');
+
+    const auto start {is.tellg()};
+    is.ignore();
+    _skipws(is);
+
+    const auto key {_parse(is)};
+
+    return {};
+}
+
+auto _parse_array(std::istream& is) -> json {
+    assert(is.peek() == '[');
+    return {};
+}
+
+auto _parse_value(std::istream& is) -> json {
+    return {};
+}
+
+auto _parse(std::istream& is) -> json {
+    _skipws(is);
+
+    if (is.eof())
+        throw parse_error("Stream reached premature EOF");
+    else if (is.peek() == '{')
+        return _parse_object(is);
+    else if (is.peek() == '[')
+        return _parse_array(is);
+    return _parse_value(is);
+}
 } // namespace libjson
