@@ -8,6 +8,7 @@ set(
     SOURCE_FILES
     TestCtorsBool.cxx
     TestCtorsInt.cxx
+    TestCtorsDouble.cxx
 )
 
 create_test_sourcelist(
