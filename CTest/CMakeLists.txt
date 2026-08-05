@@ -9,6 +9,7 @@ set(
     TestCtorsBool.cxx
     TestCtorsInt.cxx
     TestCtorsDouble.cxx
+    TestCtorsString.cxx
 )
 
 create_test_sourcelist(
