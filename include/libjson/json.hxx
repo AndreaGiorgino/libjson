@@ -7,6 +7,8 @@
 #include <variant>
 #include <vector>
 
+#include "access_error.hxx"
+
 namespace libjson {
 /**
  * @class json
@@ -165,11 +167,31 @@ class json final {
     [[nodiscard]] auto has_value(void) const noexcept -> bool;
 
     /**
+     * @brief Get the stored value as T if possible (primitive)
+     *
+     * @tparam T The target type
+     * @return
+     */
+    template <typename T>
+        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>)
+    [[nodiscard]] auto as(void) const -> std::remove_cvref_t<T> {
+        if (!_hasValue || !std::holds_alternative<T>(_value))
+            throw access_error("Value type mismatch");
+        return std::get<T>(_value);
+    }
+
+    /**
      * @brief Get the stored value as T if possible (pointer allocated)
      *
      * @tparam T The target type
      */
-    template <typename Tp>
+    template <typename T>
+        requires ptr_allocated_v<T>
+    [[nodiscard]] auto as(void) const -> std::remove_cvref_t<T> {
+        if (!_hasValue || !std::holds_alternative<T>(_value))
+            throw access_error("Value type mismatch");
+        return *std::get<T>(_value);
+    }
 
     /**
      * @brief Check if a value of type T is being hold
