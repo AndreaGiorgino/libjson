@@ -255,17 +255,15 @@ class json final {
             std::unique_ptr<array_t>, std::unique_ptr<object_t>>;
 
    private: // methods
-    static auto _deep_copy(const value_t_internal& val) noexcept -> value_t_internal {
+    static auto _deep_copy(const value_t_internal& val) noexcept
+        -> value_t_internal {
         return std::visit(
             [](const auto& v) noexcept -> value_t_internal {
                 using clean_t = std::remove_cvref_t<decltype(v)>;
 
-                // check if v can be dereferenced
                 if constexpr (requires(clean_t x) { *x; }) {
-                    using element_t =
-                        typename clean_t::element_type; // access smart pointer
-                                                        // element type
-                    using target_t = std::conditional_t<
+                    using element_t = typename clean_t::element_type;
+                    using target_t  = std::conditional_t<
                         std::constructible_from<std::string, element_t>,
                         std::string, element_t>;
 
