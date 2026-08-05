@@ -209,6 +209,22 @@ class json final {
         = std::variant<bool, int, double, std::unique_ptr<std::string>,
             std::unique_ptr<array_t>, std::unique_ptr<object_t>>;
 
+   private: // methods
+    static auto _deep_copy(const value_t_internal& val) -> value_t_internal {
+        return std::visit(
+            [](const auto& v) noexcept -> value_t_internal {
+                using T = std::decay_t<decltype(v)>;
+
+                // check for pointer allocated values
+                if constexpr (requires { typename T::element_type; }) {
+                    using element_t = typename T::element_type;
+                    return std::make_unique<element_t>(*v);
+                } else
+                    return v;
+            },
+            val);
+    };
+
    private: // members
     bool _hasValue {false};
     value_t_internal _value {};
