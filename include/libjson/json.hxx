@@ -160,18 +160,26 @@ class json final {
 
    public: // methods
     /**
-     * @brief Get if a value is being hold
+     * @brief Check if a value is being hold
      */
     [[nodiscard]] auto has_value(void) const noexcept -> bool;
 
     /**
-     * @brief Get if a value of type Tp is being hold
+     * @brief Get the stored value as T if possible (pointer allocated)
      *
-     * @tparam Tp The type to check
+     * @tparam T The target type
      */
     template <typename Tp>
+
+    /**
+     * @brief Check if a value of type T is being hold
+     *
+     * @tparam T The type to check
+     */
+    template <typename T>
+        requires variant_member_v<T, value_t>
     [[nodiscard]] auto holds_alternative(void) const noexcept -> bool {
-        return std::holds_alternative<Tp>(_value);
+        return std::holds_alternative<T>(_value);
     }
 
    private: // definitions
