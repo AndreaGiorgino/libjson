@@ -216,6 +216,13 @@ class json final {
             return std::holds_alternative<clean_t>(_value);
     }
 
+    template <typename T>
+        requires std::integral<T>
+    [[nodiscard]] auto at(T index) -> json& {
+        if (!_hasValue) throw std::runtime_error("No value is being stored");
+        return (*std::get<std::unique_ptr<array_t>>(_value))[index];
+    }
+
    private: // definitions
     using value_t_internal
         = std::variant<bool, int, double, std::unique_ptr<std::string>,
