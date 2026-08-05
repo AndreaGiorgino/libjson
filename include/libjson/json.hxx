@@ -27,8 +27,8 @@ using object_t = std::unordered_map<std::string, json>;
 /**
  * @brief Represents a json value
  */
-using value_t = std::variant<bool, int, double, std::shared_ptr<std::string>,
-    std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
+using value_t = std::variant<bool, int, double, std::string, array_t, object_t>;
+
 
 /**
  * @brief Load a json from raw string
@@ -75,8 +75,13 @@ class json final {
         return std::holds_alternative<Tp>(_value);
     }
 
+   private: // definitions
+    using value_t_internal
+        = std::variant<bool, int, double, std::unique_ptr<std::string>,
+            std::unique_ptr<array_t>, std::unique_ptr<object_t>>;
+
    private: // members
     bool _hasValue {false};
-    value_t _value {};
+    value_t_internal _value {};
 };
 } // namespace libjson
