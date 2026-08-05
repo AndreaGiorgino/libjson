@@ -97,12 +97,31 @@ auto encode(json&& el, std::ostream& os) -> void;
 // ----------------------------------------------------------------------------
 
 class json final {
-   public:
    public: // ctors
     json(void) = default;
 
-    json(const json&)                     = default;
-    auto operator =(const json&) -> json& = default;
+    // ------------ copy ------------
+
+    json(const json& rhs);
+
+    template <typename T>
+        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>
+                    && !std::same_as<std::remove_cvref_t<T>, json>)
+    json(T&& rhs) : _hasValue(true),
+                    _value(std::forward(rhs)) {}
+
+    auto operator =(const json& rhs) -> json&;
+
+    template <typename T>
+        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>
+                 && !std::same_as<std::remove_cvref_t<T>, json>)
+    auto operator =(T&& rhs) -> json& {
+        _hasValue = true;
+        _value    = std::forward(rhs);
+        return *this;
+    }
+
+    // ------------------------------
 
     json(json&&)                     = default;
     auto operator =(json&&) -> json& = default;
