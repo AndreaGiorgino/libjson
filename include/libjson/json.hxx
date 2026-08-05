@@ -2,6 +2,7 @@
 
 #include <istream>
 #include <memory>
+#include <type_traits>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -28,6 +29,26 @@ using object_t = std::unordered_map<std::string, json>;
  * @brief Represents a json value
  */
 using value_t = std::variant<bool, int, double, std::string, array_t, object_t>;
+
+/*
+ * @brief Default wrapper for variant_member_t
+ */
+template <typename T, typename U>
+struct variant_member_t : std::false_type {};
+
+/*
+ * @brief Requires T to be part of Types
+ */
+template <typename T, typename... Types>
+struct variant_member_t<T, std::variant<Types...>>
+    : std::bool_constant<(std::same_as<std::remove_cvref_t<T>, Types> || ...)> {
+};
+
+/*
+ * @brief Helper method for variant_member_t
+ */
+template <typename T, typename U>
+constexpr bool variant_member_v = variant_member_t<T, U>::value;
 
 
 /**
