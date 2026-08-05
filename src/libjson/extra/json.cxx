@@ -1,6 +1,7 @@
 #include "libjson/extra/json.hxx"
 
 #include <cassert>
+#include <functional>
 #include <sstream>
 
 #include "libjson/parse_error.hxx"
@@ -34,6 +35,15 @@ auto throw_eof(std::istream& is) -> void;
  * @param is The input stream
  */
 auto skipws(std::istream& is) noexcept -> void;
+
+/**
+ * @brief Get characters until the stop condition is met
+ *
+ * @param is The input stream
+ * @param stop_condition
+ */
+[[nodiscard]] auto get_until(std::istream& is,
+    std::function<char(bool)> stop_condition) noexcept -> std::string;
 
 /**
  * @brief Parse from stream a json value
@@ -73,8 +83,15 @@ auto skipws(std::istream& is) noexcept -> void {
     while (!is.eof() && std::isspace(is.peek())) is.ignore();
 }
 
-auto parse_object(std::istream& is) -> json {
-    if (is.eof()) throw parse_error("Premature EOF encountered");
+auto get_until(std::istream& is,
+    std::function<char(bool)> stop_condition) noexcept -> std::string {
+    if (is.eof()) return {};
+
+    std::string buffer {};
+    while (!is.eof() && !stop_condition(is.peek())) buffer += is.get();
+
+    return buffer;
+}
 
     assert(is.peek() == '{');
 
