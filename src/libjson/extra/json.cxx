@@ -22,6 +22,13 @@ auto encode(json&& el, std::ostream& os) -> void {
 // ----------------------------------------------------------------------------
 
 /**
+ * @brief Throw if EOF is encountered
+ *
+ * @param is
+ */
+auto throw_eof(std::istream& is) -> void;
+
+/**
  * @brief Skip whitespaces in stream
  *
  * @param is The input stream
@@ -57,6 +64,10 @@ auto skipws(std::istream& is) noexcept -> void;
 [[nodiscard]] auto parse_value(std::istream& is) -> json;
 
 // ----------------------------------------------------------------------------
+
+auto throw_eof(std::istream& is) -> void {
+    if (is.eof()) throw parse_error("Premature EOF encountered");
+}
 
 auto skipws(std::istream& is) noexcept -> void {
     while (!is.eof() && std::isspace(is.peek())) is.ignore();
