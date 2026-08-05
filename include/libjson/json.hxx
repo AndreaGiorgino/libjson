@@ -1,7 +1,9 @@
 #pragma once
 
+#include <concepts>
 #include <iostream>
 #include <memory>
+#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 #include <variant>
@@ -49,8 +51,8 @@ struct variant_member_t<T, std::variant<Types...>>
 /*
  * @brief Helper method for variant_member_t
  */
-template <typename T, typename U>
-constexpr bool variant_member_v = variant_member_t<T, U>::value;
+template <typename T>
+constexpr bool variant_member_v = variant_member_t<T, value_t>::value;
 
 /*
  * @brief Requires T to be pointer allocated as per value_t_internal definition
