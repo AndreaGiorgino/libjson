@@ -1,15 +1,11 @@
 #pragma once
 
 #include <concepts>
-#include <iostream>
 #include <memory>
-#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 #include <variant>
 #include <vector>
-
-#include "access_error.hxx"
 
 namespace libjson {
 /**
@@ -181,7 +177,7 @@ class json final {
         using clean_t = std::remove_cvref_t<T>;
 
         if (!_hasValue || !std::holds_alternative<clean_t>(_value))
-            throw access_error("Value type mismatch");
+            throw std::bad_variant_access();
         return std::get<clean_t>(_value);
     }
 
@@ -200,7 +196,7 @@ class json final {
         using ptr_t = std::unique_ptr<target_t>;
 
         if (!_hasValue || !std::holds_alternative<ptr_t>(_value))
-            throw access_error("Value type mismatch");
+            throw std::bad_variant_access();
         return *std::get<ptr_t>(_value);
     }
 
