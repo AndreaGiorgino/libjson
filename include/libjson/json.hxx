@@ -1,6 +1,6 @@
 #pragma once
 
-#include <istream>
+#include <iostream>
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
@@ -66,18 +66,33 @@ template <typename T>
 constexpr bool ptr_allocated_v = ptr_allocated_t<T>::value;
 
 /**
- * @brief Load a json from raw string
+ * @brief Decode json from raw string
  *
  * @param raw The input raw json
  */
-auto load(std::string_view raw) -> json;
+auto decode(std::string_view raw) -> json;
 
 /**
- * @brief Load a json from stream
+ * @brief Decode json from stream
  *
  * @param is The input stream
  */
-auto load(std::istream&& is) -> json;
+auto decode(std::istream&& is) -> json;
+
+/**
+ * @brief Encode json into string
+ *
+ * @param el The json element
+ */
+auto encode(json&& el) -> std::string;
+
+/**
+ * @brief Encode json into stream
+ *
+ * @param el The json element
+ * @param os The output stream
+ */
+auto encode(json&& el, std::ostream& os) -> void;
 
 // ----------------------------------------------------------------------------
 
