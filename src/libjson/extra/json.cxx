@@ -93,6 +93,8 @@ auto get_until(std::istream& is,
     return buffer;
 }
 
+auto parse_object(std::istream& is) -> json {
+    throw_eof(is);
     assert(is.peek() == '{');
 
     const auto start {is.tellg()};
@@ -110,8 +112,7 @@ auto get_until(std::istream& is,
 }
 
 auto parse_array(std::istream& is) -> json {
-    if (is.eof()) throw parse_error("Premature EOF encountered");
-
+    throw_eof(is);
     assert(is.peek() == '[');
 
     const auto start {is.tellg()};
@@ -121,14 +122,14 @@ auto parse_array(std::istream& is) -> json {
 
     if (is.eof() || is.peek() != ']')
         throw parse_error(std::format(
-            "Unclosed object opened at position {}", (std::size_t)start + 1));
+            "Unclosed array opened at position {}", (std::size_t)start + 1));
 
     is.ignore();
     return {};
 }
 
 auto parse_value(std::istream& is) -> json {
-    if (is.eof()) throw parse_error("Premature EOF encountered");
+    throw_eof(is);
 
     const auto ch {is.peek()};
     if (ch == '"') {
@@ -141,16 +142,13 @@ auto parse_value(std::istream& is) -> json {
 
     throw parse_error(std::format("Unexpected character at position {}: {}",
         (std::size_t)is.tellg() + 1, ch));
-
-    return {};
 }
 
 auto parse(std::istream& is) -> json {
     skipws(is);
+    throw_eof(is);
 
-    if (is.eof())
-        throw parse_error("Premature EOF encountered");
-    else if (is.peek() == '{')
+    if (is.peek() == '{')
         return parse_object(is);
     else if (is.peek() == '[')
         return parse_array(is);
