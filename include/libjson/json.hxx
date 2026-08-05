@@ -70,7 +70,7 @@ constexpr bool ptr_allocated_v = ptr_allocated_t<T>::value;
 
 class json final {
    public: // ctors
-    json(void);
+    json(void) = default;
 
     // ------------ copy ------------
 
