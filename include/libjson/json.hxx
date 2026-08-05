@@ -65,7 +65,7 @@ struct ptr_allocated_t
 };
 
 /*
- * @brief Helper method for ptr_allocated_v
+ * @brief Helper method for ptr_allocated_t
  */
 template <typename T>
 constexpr bool ptr_allocated_v = ptr_allocated_t<T>::value;
@@ -103,26 +103,46 @@ auto encode(json&& el, std::ostream& os) -> void;
 
 class json final {
    public: // ctors
-    json(void) = default;
+    json(void);
 
     // ------------ copy ------------
 
     json(const json& rhs);
 
     template <typename T>
-        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>
-                    && !std::same_as<std::remove_cvref_t<T>, json>)
-    json(T&& rhs) : _hasValue(true),
-                    _value(std::forward(rhs)) {}
+        requires(variant_member_v<T> && !ptr_allocated_v<T>)
+    json(const T& rhs) : _hasValue(true),
+                         _value(rhs) {}
+
+    template <typename T>
+        requires(ptr_allocated_v<T>)
+    json(const T& rhs) : _hasValue(true) {
+        using target_t
+            = std::conditional_t<std::constructible_from<std::string, T>,
+                std::string, std::remove_cvref_t<T>>;
+
+        _value = std::make_unique<target_t>(rhs);
+    }
 
     auto operator =(const json& rhs) -> json&;
 
     template <typename T>
-        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>
-                 && !std::same_as<std::remove_cvref_t<T>, json>)
-    auto operator =(T&& rhs) -> json& {
+        requires(variant_member_v<T> && !ptr_allocated_v<T>)
+    auto operator =(const T& rhs) -> json& {
         _hasValue = true;
-        _value    = std::forward(rhs);
+        _value    = rhs;
+        return *this;
+    }
+
+    template <typename T>
+        requires(ptr_allocated_v<T>)
+    auto operator =(const T& rhs) -> json& {
+        using target_t
+            = std::conditional_t<std::constructible_from<std::string, T>,
+                std::string, std::remove_cvref_t<T>>;
+
+        _hasValue = true;
+        _value    = std::make_unique<target_t>(rhs);
         return *this;
     }
 
@@ -133,29 +153,39 @@ class json final {
     json(json&& rhs);
 
     template <typename T>
-        requires(
-            ptr_allocated_v<T> && !std::same_as<std::remove_cvref_t<T>, json>)
-    json(T&& rhs) {
+        requires(variant_member_v<T> && !ptr_allocated_v<T>)
+    json(T&& rhs) : _hasValue(true),
+                    _value(std::forward<T>(rhs)) {}
+
+    template <typename T>
+        requires(ptr_allocated_v<T>)
+    json(T&& rhs) : _hasValue(true) {
         using target_t
-            = std::conditional_t<std::constructible_from<std::string>,
+            = std::conditional_t<std::constructible_from<std::string, T>,
                 std::string, std::remove_cvref_t<T>>;
 
-        _hasValue = true;
-        _value    = std::make_unique<target_t>(std::forward(rhs));
+        _value = std::make_unique<target_t>(std::forward<T>(rhs));
     }
 
     auto operator =(json&& rhs) -> json&;
 
     template <typename T>
-        requires(
-            ptr_allocated_v<T> && !std::same_as<std::remove_cvref_t<T>, json>)
+        requires(variant_member_v<T> && !ptr_allocated_v<T>)
+    auto operator =(T&& rhs) -> json& {
+        _hasValue = true;
+        _value    = std::forward<T>(rhs);
+        return *this;
+    }
+
+    template <typename T>
+        requires(ptr_allocated_v<T>)
     auto operator =(T&& rhs) -> json& {
         using target_t
-            = std::conditional_t<std::constructible_from<std::string>,
+            = std::conditional_t<std::constructible_from<std::string, T>,
                 std::string, std::remove_cvref_t<T>>;
 
         _hasValue = true;
-        _value    = std::make_unique<target_t>(std::forward(rhs));
+        _value    = std::make_unique<target_t>(std::forward<T>(rhs));
         return *this;
     }
 
@@ -173,14 +203,15 @@ class json final {
      * @brief Get the stored value as T if possible (primitive)
      *
      * @tparam T The target type
-     * @return
      */
     template <typename T>
-        requires(variant_member_v<T, value_t> && !ptr_allocated_v<T>)
+        requires(variant_member_v<T> && !ptr_allocated_v<T>)
     [[nodiscard]] auto as(void) const -> std::remove_cvref_t<T> {
-        if (!_hasValue || !std::holds_alternative<T>(_value))
+        using clean_t = std::remove_cvref_t<T>;
+
+        if (!_hasValue || !std::holds_alternative<clean_t>(_value))
             throw access_error("Value type mismatch");
-        return std::get<T>(_value);
+        return std::get<clean_t>(_value);
     }
 
     /**
@@ -191,9 +222,15 @@ class json final {
     template <typename T>
         requires ptr_allocated_v<T>
     [[nodiscard]] auto as(void) const -> std::remove_cvref_t<T> {
-        if (!_hasValue || !std::holds_alternative<T>(_value))
+        using clean_t = std::remove_cvref_t<T>;
+        using target_t
+            = std::conditional_t<std::constructible_from<std::string, clean_t>,
+                std::string, clean_t>;
+        using ptr_t = std::unique_ptr<target_t>;
+
+        if (!_hasValue || !std::holds_alternative<ptr_t>(_value))
             throw access_error("Value type mismatch");
-        return *std::get<T>(_value);
+        return *std::get<ptr_t>(_value);
     }
 
     /**
@@ -202,9 +239,14 @@ class json final {
      * @tparam T The type to check
      */
     template <typename T>
-        requires variant_member_v<T, value_t>
+        requires variant_member_v<T>
     [[nodiscard]] auto holds_alternative(void) const noexcept -> bool {
-        return std::holds_alternative<T>(_value);
+        using clean_t = std::remove_cvref_t<T>;
+
+        if constexpr (ptr_allocated_v<clean_t>)
+            return std::holds_alternative<std::unique_ptr<clean_t>>(_value);
+        else
+            return std::holds_alternative<clean_t>(_value);
     }
 
    private: // definitions
