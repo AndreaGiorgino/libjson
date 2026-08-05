@@ -70,35 +70,6 @@ struct ptr_allocated_t
 template <typename T>
 constexpr bool ptr_allocated_v = ptr_allocated_t<T>::value;
 
-/**
- * @brief Decode json from raw string
- *
- * @param raw The input raw json
- */
-auto decode(std::string_view raw) -> json;
-
-/**
- * @brief Decode json from stream
- *
- * @param is The input stream
- */
-auto decode(std::istream&& is) -> json;
-
-/**
- * @brief Encode json into string
- *
- * @param el The json element
- */
-auto encode(json&& el) -> std::string;
-
-/**
- * @brief Encode json into stream
- *
- * @param el The json element
- * @param os The output stream
- */
-auto encode(json&& el, std::ostream& os) -> void;
-
 // ----------------------------------------------------------------------------
 
 class json final {
