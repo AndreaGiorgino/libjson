@@ -50,6 +50,20 @@ struct variant_member_t<T, std::variant<Types...>>
 template <typename T, typename U>
 constexpr bool variant_member_v = variant_member_t<T, U>::value;
 
+/*
+ * @brief Requires T to be pointer allocated as per value_t_internal definition
+ */
+template <typename T>
+struct ptr_allocated_t
+    : std::bool_constant<(std::constructible_from<std::string, T>
+                          || std::same_as<std::remove_cvref<T>, array_t>
+                          || std::same_as<std::remove_cvref<T>, object_t>)> {};
+
+/*
+ * @brief Helper method for ptr_allocated_v
+ */
+template <typename T>
+constexpr bool ptr_allocated_v = ptr_allocated_t<T>::value;
 
 /**
  * @brief Load a json from raw string
