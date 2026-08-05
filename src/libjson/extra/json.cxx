@@ -43,7 +43,7 @@ auto skipws(std::istream& is) noexcept -> void;
  * @param stop_condition
  */
 [[nodiscard]] auto get_until(std::istream& is,
-    std::function<char(bool)> stop_condition) noexcept -> std::string;
+    std::function<bool(char)> stop_condition) noexcept -> std::string;
 
 /**
  * @brief Parse from stream a json value
@@ -84,7 +84,7 @@ auto skipws(std::istream& is) noexcept -> void {
 }
 
 auto get_until(std::istream& is,
-    std::function<char(bool)> stop_condition) noexcept -> std::string {
+    std::function<bool(char)> stop_condition) noexcept -> std::string {
     if (is.eof()) return {};
 
     std::string buffer {};
