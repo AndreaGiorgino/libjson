@@ -35,7 +35,7 @@ auto _parse_object(std::istream& is) -> json;
 auto _parse_array(std::istream& is) -> json;
 
 /**
- * @brief Parse from stream a json fundamental value (bool/int/double/string)
+ * @brief Parse from stream a json primitive value (bool/int/double/string)
  *
  * @param is The input stream
  */
@@ -84,11 +84,11 @@ auto _parse(std::istream& is) -> json {
     return _parse_value(is);
 }
 
-auto load(std::string_view raw) -> json {
-    return load(std::stringstream {raw.data()});
+auto decode(std::string_view raw) -> json {
+    return decode(std::stringstream {raw.data()});
 }
 
-auto load(std::istream&& is) -> json {
+auto decode(std::istream&& is) -> json {
     if (!is) throw std::runtime_error("Invalid stream provided");
 
     const auto ret {_parse(is)};
