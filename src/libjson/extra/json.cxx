@@ -118,14 +118,39 @@ auto parse_array(std::istream& is) -> json {
     const auto start {is.tellg()};
     is.ignore();
 
-    // TODO: parse values
+    array_t buffer {};
+    while (!is.eof()) {
+        if (is.peek() == ']') {
+            if (buffer.size() == 0)
+                break;
+            else
+                throw parse_error(
+                    std::format("Trailing comma encountered at position {}",
+                        (std::size_t)start + 1));
+        }
+
+        buffer.push_back(parse(is));
+
+        skipws(is);
+        if (is.eof()) break;
+
+        const auto ch {is.peek()};
+        if (ch == ']')
+            break;
+        else if (ch == ',')
+            is.ignore();
+        else
+            throw parse_error(
+                std::format("Unexpected character at position {}: {}",
+                    (std::size_t)start + 1, ch));
+    }
 
     if (is.eof() || is.peek() != ']')
         throw parse_error(std::format(
             "Unclosed array opened at position {}", (std::size_t)start + 1));
 
     is.ignore();
-    return {};
+    return buffer;
 }
 
 auto parse_value(std::istream& is) -> json {
