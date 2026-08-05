@@ -156,13 +156,48 @@ auto parse_array(std::istream& is) -> json {
 auto parse_value(std::istream& is) -> json {
     throw_eof(is);
 
+    const auto start {is.tellg()};
     const auto ch {is.peek()};
+
     if (ch == '"') {
-        // TODO: decode string
+        is.ignore();
+        std::string buffer {get_until(
+            is, [](const auto ch) { return ch == '"' || ch == '\n'; })};
+
+        if (is.eof() || is.peek() != '"')
+            throw parse_error(
+                std::format("Unclosed string opened at position {}: {}",
+                    (std::size_t)start + 1, buffer));
+
+        is.ignore();
+        return buffer;
     } else if (std::isdigit(ch)) {
-        // TODO: parse number
+        std::string buffer {get_until(
+            is, [](const auto ch) { return !std::isdigit(ch) && ch != '.'; })};
+
+        try {
+            if (buffer.find('.') != std::string::npos)
+                return {std::stod(buffer)};
+            else
+                return {std::stoi(buffer)};
+        } catch (...) {
+            throw parse_error(
+                std::format("Cannot parse number at position {}: {}",
+                    (std::size_t)start + 1, buffer));
+        }
     } else if (std::isalpha(ch)) {
-        // TODO: check for keywords
+        std::string buffer {
+            get_until(is, [](const auto ch) { return !std::isalpha(ch); })};
+
+        if (buffer == "null")
+            return {};
+        else if (buffer == "false")
+            return {false};
+        else if (buffer == "true")
+            return {true};
+
+        throw parse_error(std::format("Unexpected literal at position {}: {}",
+            (std::size_t)start + 1, buffer));
     }
 
     throw parse_error(std::format("Unexpected character at position {}: {}",
