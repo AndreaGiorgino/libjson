@@ -60,8 +60,9 @@ constexpr bool variant_member_v = variant_member_t<T, value_t>::value;
 template <typename T>
 struct ptr_allocated_t
     : std::bool_constant<(std::constructible_from<std::string, T>
-                          || std::same_as<std::remove_cvref<T>, array_t>
-                          || std::same_as<std::remove_cvref<T>, object_t>)> {};
+                          || std::same_as<std::remove_cvref_t<T>, array_t>
+                          || std::same_as<std::remove_cvref_t<T>, object_t>)> {
+};
 
 /*
  * @brief Helper method for ptr_allocated_v
