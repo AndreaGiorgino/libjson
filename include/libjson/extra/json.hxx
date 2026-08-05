@@ -4,20 +4,6 @@
 
 namespace libjson {
 /**
- * @brief Decode json from raw string
- *
- * @param raw The input raw json
- */
-auto decode(std::string_view raw) -> json;
-
-/**
- * @brief Decode json from stream
- *
- * @param is The input stream
- */
-auto decode(std::istream&& is) -> json;
-
-/**
  * @brief Encode json into string
  *
  * @param el The json element
@@ -31,4 +17,18 @@ auto encode(json&& el) -> std::string;
  * @param os The output stream
  */
 auto encode(json&& el, std::ostream& os) -> void;
+
+/**
+ * @brief Decode json from raw string
+ *
+ * @param raw The input raw json
+ */
+auto decode(std::string_view raw) -> json;
+
+/**
+ * @brief Decode json from stream
+ *
+ * @param is The input stream
+ */
+auto decode(std::istream&& is) -> json;
 } // namespace libjson

@@ -6,6 +6,21 @@
 #include "libjson/parse_error.hxx"
 
 namespace libjson {
+auto encode(json&& el) -> std::string {
+    // TODO: not implemented yet
+    (void)el;
+    throw;
+}
+
+auto encode(json&& el, std::ostream& os) -> void {
+    // TODO: not implemented yet
+    (void)el;
+    (void)os;
+    throw;
+}
+
+// ----------------------------------------------------------------------------
+
 /**
  * @brief Skip whitespaces in stream
  *
