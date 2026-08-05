@@ -123,8 +123,38 @@ class json final {
 
     // ------------------------------
 
-    json(json&&)                     = default;
-    auto operator =(json&&) -> json& = default;
+    // ------------ move ------------
+
+    json(json&& rhs);
+
+    template <typename T>
+        requires(
+            ptr_allocated_v<T> && !std::same_as<std::remove_cvref_t<T>, json>)
+    json(T&& rhs) {
+        using target_t
+            = std::conditional_t<std::constructible_from<std::string>,
+                std::string, std::remove_cvref_t<T>>;
+
+        _hasValue = true;
+        _value    = std::make_unique<target_t>(std::forward(rhs));
+    }
+
+    auto operator =(json&& rhs) -> json&;
+
+    template <typename T>
+        requires(
+            ptr_allocated_v<T> && !std::same_as<std::remove_cvref_t<T>, json>)
+    auto operator =(T&& rhs) -> json& {
+        using target_t
+            = std::conditional_t<std::constructible_from<std::string>,
+                std::string, std::remove_cvref_t<T>>;
+
+        _hasValue = true;
+        _value    = std::make_unique<target_t>(std::forward(rhs));
+        return *this;
+    }
+
+    // ------------------------------
 
     ~json(void) = default;
 
