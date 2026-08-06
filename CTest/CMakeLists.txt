@@ -10,6 +10,7 @@ set(
     TestCtorsInt.cxx
     TestCtorsDouble.cxx
     TestCtorsString.cxx
+    TestCtorsArray.cxx
 )
 
 create_test_sourcelist(
