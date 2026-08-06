@@ -240,8 +240,7 @@ class json final {
         if (!self._hasValue)
             throw std::runtime_error("No value is being stored");
 
-        return std::get<std::unique_ptr<array_t>>(
-            std::forward<Self>(self)._value)
+        return std::get<array_ptr_t>(std::forward<Self>(self)._value)
             ->at(index);
     }
 
@@ -262,8 +261,7 @@ class json final {
         if (!self._hasValue)
             throw std::runtime_error("No value is being stored");
 
-        return std::get<std::unique_ptr<object_t>>(self._value)
-            ->at(std::string {key});
+        return std::get<object_ptr_t>(self._value)->at(std::string {key});
     }
 
     /**
@@ -284,17 +282,25 @@ class json final {
             _value    = std::make_unique<object_t>(object_t {});
         }
 
-        return (
-            *std::get<std::unique_ptr<object_t>>(_value))[std::string {key}];
+        return (*std::get<object_ptr_t>(_value))[std::string {key}];
     }
 
    private: // definitions
     /*
+     * @brief Represents a pointer to an array_t
+     */
+    using array_ptr_t = std::unique_ptr<array_t>;
+
+    /*
+     * @brief Represents a pointer to an object_t
+     */
+    using object_ptr_t = std::unique_ptr<object_t>;
+
+    /*
      * @brief Represents a json value internal implementation
      */
-    using value_t_internal
-        = std::variant<bool, int, double, std::unique_ptr<std::string>,
-            std::unique_ptr<array_t>, std::unique_ptr<object_t>>;
+    using value_t_internal = std::variant<bool, int, double,
+        std::unique_ptr<std::string>, array_ptr_t, object_ptr_t>;
 
    private: // methods
     /**
@@ -306,8 +312,8 @@ class json final {
     static auto _deep_copy(const value_t_internal& val) noexcept
         -> value_t_internal {
         return std::visit(
-            [](const auto& v) noexcept -> value_t_internal {
-                using clean_t = std::remove_cvref_t<decltype(v)>;
+            [](const auto& val) noexcept -> value_t_internal {
+                using clean_t = std::remove_cvref_t<decltype(val)>;
 
                 if constexpr (requires(clean_t x) { *x; }) {
                     using element_t = typename clean_t::element_type;
@@ -315,9 +321,9 @@ class json final {
                         std::constructible_from<std::string, element_t>,
                         std::string, element_t>;
 
-                    return std::make_unique<target_t>(*v);
+                    return std::make_unique<target_t>(*val);
                 } else
-                    return v;
+                    return val;
             },
             val);
     };
