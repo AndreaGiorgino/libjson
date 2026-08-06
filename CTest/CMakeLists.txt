@@ -12,6 +12,7 @@ set(
     TestCtorsString.cxx
     TestCtorsArray.cxx
     TestArrayPushData.cxx
+    TestArrayAccessOperator.cxx
     TestCtorsObject.cxx
     TestObjectAccessOperator.cxx
 )
