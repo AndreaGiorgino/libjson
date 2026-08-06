@@ -52,6 +52,8 @@ auto skipws(std::istream& is) noexcept -> void;
  * @brief Parse from stream a json value
  *
  * @param is The input stream
+ *
+ * @throws parse_error If the stream is malformed
  */
 [[nodiscard]] auto parse(std::istream& is) -> json;
 
@@ -120,8 +122,54 @@ auto parse_object(std::istream& is) -> json {
     const auto start {is.tellg()};
     is.ignore();
 
-    // TODO: parse keys
-    // TODO: parse values
+    object_t buffer {};
+    while (!is.eof()) {
+        skipws(is);
+        throw_eof(is);
+
+        if (is.peek() == '}') {
+            if (buffer.size() == 0)
+                break;
+            else
+                throw parse_error(
+                    std::format("Trailing comma encountered at position {}",
+                        (std::size_t)is.tellg() + 1));
+        }
+
+        const auto key {parse(is)};
+        if (!key.holds_alternative<std::string>())
+            throw parse_error(
+                std::format("Expected a string as key in object at position {}",
+                    (std::size_t)start + 1));
+
+        skipws(is);
+        throw_eof(is);
+
+        if (is.peek() != ':')
+            throw parse_error(std::format(
+                "Expected a colon between a key-value pair at position {}: {}",
+                (std::size_t)is.tellg(), is.peek()));
+
+        is.ignore();
+        skipws(is);
+        throw_eof(is);
+
+        const auto val {parse(is)};
+        buffer[key.as<std::string>()] = std::move(val);
+
+        skipws(is);
+        throw_eof(is);
+
+        const auto ch {is.peek()};
+        if (ch == '}')
+            break;
+        else if (ch == ',')
+            is.ignore();
+        else
+            throw parse_error(
+                std::format("Unexpected character at position {}: {}",
+                    (std::size_t)is.tellg() + 1, ch));
+    }
 
     if (is.eof() || is.peek() != '}')
         throw parse_error(std::format(
@@ -140,6 +188,9 @@ auto parse_array(std::istream& is) -> json {
 
     array_t buffer {};
     while (!is.eof()) {
+        skipws(is);
+        throw_eof(is);
+
         if (is.peek() == ']') {
             if (buffer.size() == 0)
                 break;
@@ -152,7 +203,7 @@ auto parse_array(std::istream& is) -> json {
         buffer.push_back(parse(is));
 
         skipws(is);
-        if (is.eof()) break;
+        throw_eof(is);
 
         const auto ch {is.peek()};
         if (ch == ']')
@@ -220,8 +271,8 @@ auto parse_value(std::istream& is) -> json {
             (std::size_t)start + 1, buffer));
     }
 
-    throw parse_error(std::format("Unexpected character at position {}: {}",
-        (std::size_t)start + 1, ch));
+    throw parse_error(std::format(
+        "Unexpected character at position {}: {}", (std::size_t)start + 1, ch));
 }
 
 auto parse(std::istream& is) -> json {
@@ -236,11 +287,15 @@ auto parse(std::istream& is) -> json {
 }
 
 auto decode(std::string_view raw) -> json {
-    return decode(std::stringstream {raw.data()});
+    std::stringstream ss {raw.data()};
+    return decode(ss);
 }
 
-auto decode(std::istream&& is) -> json {
+auto decode(std::istream& is) -> json {
     if (!is) throw std::runtime_error("Invalid stream provided");
+
+    skipws(is);
+    if (is.eof()) return {}; // empty file
 
     const auto ret {parse(is)};
 
