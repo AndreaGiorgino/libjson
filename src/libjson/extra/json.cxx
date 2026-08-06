@@ -26,6 +26,8 @@ auto encode(json&& el, std::ostream& os) -> void {
  * @brief Throw if EOF is encountered
  *
  * @param is
+ *
+ * @throws parse_error If EOF is encountered
  */
 auto throw_eof(std::istream& is) -> void;
 
@@ -41,6 +43,7 @@ auto skipws(std::istream& is) noexcept -> void;
  *
  * @param is The input stream
  * @param stop_condition
+ * @return The string formed by the consumed characters
  */
 [[nodiscard]] auto get_until(std::istream& is,
     std::function<bool(char)> stop_condition) noexcept -> std::string;
@@ -56,6 +59,10 @@ auto skipws(std::istream& is) noexcept -> void;
  * @brief Parse from stream a json object value
  *
  * @param is The input stream
+ * @return A json containing the parsed object value
+ *
+ * @throws parse_error If a premature EOF is encountered
+ * @throws parse_error If the object is unclosed
  */
 [[nodiscard]] auto parse_object(std::istream& is) -> json;
 
@@ -63,6 +70,12 @@ auto skipws(std::istream& is) noexcept -> void;
  * @brief Parse from stream a json array value
  *
  * @param is The input stream
+ * @return A json containing the parsed array value
+ *
+ * @throws parse_error If a premature EOF is encountered
+ * @throws parse_error If a trailing comma is encountered
+ * @throws parse_error If an unexpected character is encountered
+ * @throws parse_error If the array is unclosed
  */
 [[nodiscard]] auto parse_array(std::istream& is) -> json;
 
@@ -70,6 +83,13 @@ auto skipws(std::istream& is) noexcept -> void;
  * @brief Parse from stream a json primitive value (bool/int/double/string)
  *
  * @param is The input stream
+ * @return A json containing the parsed primitive value
+ *
+ * @throws parse_error If a premature EOF is encountered
+ * @throws parse_error If the string is unclosed
+ * @throws parse_error If the number is Invalid
+ * @throws parse_error If an unexpected character is encountered
+ * @throws parse_error If an unexpected literal is encountered
  */
 [[nodiscard]] auto parse_value(std::istream& is) -> json;
 

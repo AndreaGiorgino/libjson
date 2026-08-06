@@ -173,7 +173,7 @@ class json final {
      * @tparam T The target type
      * @return The stored value of type T
      *
-     * @throw std::bad_variant_access If the stored value is not of type T
+     * @throws std::bad_variant_access If the stored value is not of type T
      */
     template <typename T>
         requires(variant_member_v<T> && !ptr_allocated_v<T>)
@@ -191,7 +191,7 @@ class json final {
      * @tparam T The target type
      * @return The stored value of type T
      *
-     * @throw std::bad_variant_access If the stored value is not of type T
+     * @throws std::bad_variant_access If the stored value is not of type T
      */
     template <typename T>
         requires ptr_allocated_v<T>
