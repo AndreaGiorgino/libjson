@@ -8,6 +8,8 @@ namespace libjson {
  *
  * @param el The json element
  * @return The encoded json as std::string
+ *
+ * @throws parse_error If the stream is malformed
  */
 auto encode(json&& el) -> std::string;
 
@@ -17,6 +19,8 @@ auto encode(json&& el) -> std::string;
  * @param el The json element
  * @param os The output stream
  * @return The encoded json as std::string
+ *
+ * @throws parse_error If the stream is malformed
  */
 auto encode(json&& el, std::ostream& os) -> void;
 
@@ -25,6 +29,8 @@ auto encode(json&& el, std::ostream& os) -> void;
  *
  * @param raw The input raw json
  * @return The encoded std::string_view as json
+ *
+ * @throws parse_error If the stream is malformed
  */
 auto decode(std::string_view raw) -> json;
 
@@ -33,6 +39,8 @@ auto decode(std::string_view raw) -> json;
  *
  * @param is The input stream
  * @return The encoded std::string_view as json
+ *
+ * @throws parse_error If the stream is malformed
  */
-auto decode(std::istream&& is) -> json;
+auto decode(std::istream& is) -> json;
 } // namespace libjson
