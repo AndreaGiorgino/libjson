@@ -146,7 +146,7 @@ auto parse_array(std::istream& is) -> json {
             else
                 throw parse_error(
                     std::format("Trailing comma encountered at position {}",
-                        (std::size_t)start + 1));
+                        (std::size_t)is.tellg() + 1));
         }
 
         buffer.push_back(parse(is));
@@ -162,7 +162,7 @@ auto parse_array(std::istream& is) -> json {
         else
             throw parse_error(
                 std::format("Unexpected character at position {}: {}",
-                    (std::size_t)start + 1, ch));
+                    (std::size_t)is.tellg() + 1, ch));
     }
 
     if (is.eof() || is.peek() != ']')
@@ -221,7 +221,7 @@ auto parse_value(std::istream& is) -> json {
     }
 
     throw parse_error(std::format("Unexpected character at position {}: {}",
-        (std::size_t)is.tellg() + 1, ch));
+        (std::size_t)start + 1, ch));
 }
 
 auto parse(std::istream& is) -> json {
