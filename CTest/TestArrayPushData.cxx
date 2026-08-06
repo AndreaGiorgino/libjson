@@ -4,7 +4,7 @@
 using json     = libjson::json;
 using array_t = libjson::array_t;
 
-auto TestArrayPushValue(int, char**) -> int {
+auto TestArrayPushData(int, char**) -> int {
     const std::string expected {"json"};
 
     // array initialised
