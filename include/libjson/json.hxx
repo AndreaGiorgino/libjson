@@ -267,11 +267,20 @@ class json final {
     }
 
    private: // definitions
+    /*
+     * @brief Represents a json value internal implementation
+     */
     using value_t_internal
         = std::variant<bool, int, double, std::unique_ptr<std::string>,
             std::unique_ptr<array_t>, std::unique_ptr<object_t>>;
 
    private: // methods
+    /**
+     * @brief Deep copy the stored value
+     *
+     * @param val The variant to copy from
+     * @return The variant copied value
+     */
     static auto _deep_copy(const value_t_internal& val) noexcept
         -> value_t_internal {
         return std::visit(
