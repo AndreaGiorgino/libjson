@@ -266,6 +266,28 @@ class json final {
             ->at(std::string {key});
     }
 
+    /**
+     * @brief Returns a reference to the element in the object with the
+     * specified key. Insert it if it does not exist
+     *
+     * @param key The key of the element
+     * @return The reference to the element
+     *
+     * @throws std::runtime_error If no value is being stored
+     * @throws std::bad_variant_access If the stored value is not an object
+     * @throws std::out_of_range If the object does not have an element with the
+     * specified key
+     */
+    auto operator [](std::string_view key) -> json& {
+        if (!_hasValue) {
+            _hasValue = true;
+            _value    = std::make_unique<object_t>(object_t {});
+        }
+
+        return (
+            *std::get<std::unique_ptr<object_t>>(_value))[std::string {key}];
+    }
+
    private: // definitions
     /*
      * @brief Represents a json value internal implementation
