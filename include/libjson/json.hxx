@@ -245,6 +245,24 @@ class json final {
     }
 
     /**
+     * @brief Returns a reference to the element in the array at the specified
+     * location
+     *
+     * @param index The position of the element
+     * @return The reference to the element
+     *
+     * @throws std::runtime_error If no value is being stored
+     * @throws std::bad_variant_access If the stored value is not an array
+     * @throws std::out_of_range If the location exceeds the bounds of the array
+     */
+    [[nodiscard]] auto operator [](std::size_t index) -> json& {
+        if (!_hasValue)
+            throw std::runtime_error("No value is being stored");
+
+        return std::get<array_ptr_t>(_value)->at(index);
+    }
+
+    /**
      * @brief Add data to the end of the array
      *
      * @param val The data to add
@@ -334,7 +352,7 @@ class json final {
      * @throws std::out_of_range If the object does not have an element with the
      * specified key
      */
-    auto operator [](std::string_view key) -> json& {
+    [[nodiscard]] auto operator [](std::string_view key) -> json& {
         if (!_hasValue) {
             _hasValue = true;
             _value    = std::make_unique<object_t>(object_t {});
