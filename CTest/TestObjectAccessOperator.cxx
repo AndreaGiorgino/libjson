@@ -30,8 +30,23 @@ auto TestObjectAccessOperator(int, char**) -> int {
 
     // bad_variant_access
     try {
-        json {69}[""];
-    } catch (const std::bad_variant_access& ex) {
+        (void)json {69}.at("");
+    } catch (const std::bad_variant_access&) {
+    } catch (...) {
+        throw;
+    }
+
+    try {
+        (void)json {69}[""];
+    } catch (const std::bad_variant_access&) {
+    } catch (...) {
+        throw;
+    }
+
+    // out_of_range
+    try {
+        (void)json {object_t {}}.at("");
+    } catch (const std::out_of_range&) {
     } catch (...) {
         throw;
     }
