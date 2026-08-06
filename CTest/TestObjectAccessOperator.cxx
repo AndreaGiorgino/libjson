@@ -7,13 +7,25 @@ using object_t = libjson::object_t;
 auto TestObjectAccessOperator(int, char**) -> int {
     const int expected {69};
 
-    json el0 {};
-    el0["number"] = 69;
+    // access existing key
+    json el0 {object_t {{"number", 420}}};
+    el0["number"] = expected;
     helpers::check_child_eq(el0, "number", expected);
 
+    // access non-existing key
+    /// object initialised
+    json el1 {};
+    el1["number"] = expected;
+    helpers::check_child_eq(el1, "number", expected);
+
+    /// null initialised
+    json el2 {};
+    el2["number"] = expected;
+    helpers::check_child_eq(el2, "number", expected);
+
+    // bad_variant_access
     try {
-        json el1 {69};
-        (void)el1[""];
+        json {69}[""];
     } catch (const std::bad_variant_access& ex) {
     } catch (...) {
         throw;
