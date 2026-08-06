@@ -1,7 +1,7 @@
 #include "helpers.hxx"
 #include "libjson/json.hxx"
 
-using json     = libjson::json;
+using json    = libjson::json;
 using array_t = libjson::array_t;
 
 auto TestArrayPushData(int, char**) -> int {
