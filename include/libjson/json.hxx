@@ -163,6 +163,7 @@ class json final {
    public: // methods
     /**
      * @brief Check if a value is being hold
+     * @return The result of the check
      */
     [[nodiscard]] auto has_value(void) const noexcept -> bool;
 
@@ -170,6 +171,9 @@ class json final {
      * @brief Get the stored value as T if possible (primitive)
      *
      * @tparam T The target type
+     * @return The stored value of type T
+     *
+     * @throw std::bad_variant_access If the stored value is not of type T
      */
     template <typename T>
         requires(variant_member_v<T> && !ptr_allocated_v<T>)
@@ -185,6 +189,9 @@ class json final {
      * @brief Get the stored value as T if possible (pointer allocated)
      *
      * @tparam T The target type
+     * @return The stored value of type T
+     *
+     * @throw std::bad_variant_access If the stored value is not of type T
      */
     template <typename T>
         requires ptr_allocated_v<T>
@@ -204,6 +211,7 @@ class json final {
      * @brief Check if a value of type T is being hold
      *
      * @tparam T The type to check
+     * @return The result of the check
      */
     template <typename T>
         requires variant_member_v<T>
@@ -216,9 +224,17 @@ class json final {
             return std::holds_alternative<clean_t>(_value);
     }
 
-    template <typename T>
-        requires std::integral<T>
-    [[nodiscard]] auto at(T index) -> json& {
+    /**
+     * @brief Returns a reference to the element at specified location
+     *
+     * @param index The position of the
+     * @return The reference to the element
+     *
+     * @throws std::runtime_error If no value is being stored
+     * @throws std::bad_variant_access If the stored value is not an array
+     * @throws std::out_of_range If the location exceeds the bounds of the array
+     */
+    [[nodiscard]] auto at(std::size_t index) -> json& {
         if (!_hasValue) throw std::runtime_error("No value is being stored");
         return (*std::get<std::unique_ptr<array_t>>(_value))[index];
     }
