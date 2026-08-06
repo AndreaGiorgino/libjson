@@ -12,6 +12,7 @@ set(
     TestCtorsString.cxx
     TestCtorsArray.cxx
     TestCtorsObject.cxx
+    TestObjectAccessOperator.cxx
 )
 
 create_test_sourcelist(
