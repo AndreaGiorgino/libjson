@@ -225,18 +225,45 @@ class json final {
     }
 
     /**
-     * @brief Returns a reference to the element at specified location
+     * @brief Returns a reference to the element in the array at the specified
+     * location
      *
-     * @param index The position of the
+     * @param index The position of the element
      * @return The reference to the element
      *
      * @throws std::runtime_error If no value is being stored
      * @throws std::bad_variant_access If the stored value is not an array
      * @throws std::out_of_range If the location exceeds the bounds of the array
      */
-    [[nodiscard]] auto at(std::size_t index) -> json& {
-        if (!_hasValue) throw std::runtime_error("No value is being stored");
-        return (*std::get<std::unique_ptr<array_t>>(_value))[index];
+    template <typename Self>
+    [[nodiscard]] auto at(this Self&& self, std::size_t index) -> Self {
+        if (!self._hasValue)
+            throw std::runtime_error("No value is being stored");
+
+        return std::get<std::unique_ptr<array_t>>(
+            std::forward<Self>(self)._value)
+            ->at(index);
+    }
+
+    /**
+     * @brief Returns a reference to the element in the object with the
+     * specified key
+     *
+     * @param key The key of the element
+     * @return The reference to the element
+     *
+     * @throws std::runtime_error If no value is being stored
+     * @throws std::bad_variant_access If the stored value is not an object
+     * @throws std::out_of_range If the object does not have an element with the
+     * specified key
+     */
+    template <typename Self>
+    [[nodiscard]] auto at(this Self&& self, std::string_view key) -> Self {
+        if (!self._hasValue)
+            throw std::runtime_error("No value is being stored");
+
+        return std::get<std::unique_ptr<object_t>>(self._value)
+            ->at(std::string {key});
     }
 
    private: // definitions
