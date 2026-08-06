@@ -13,6 +13,7 @@ set(
     TestCtorsArray.cxx
     TestCtorsObject.cxx
     TestObjectAccessOperator.cxx
+    TestArrayPushValue.cxx
 )
 
 create_test_sourcelist(
