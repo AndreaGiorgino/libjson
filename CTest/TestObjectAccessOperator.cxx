@@ -23,6 +23,11 @@ auto TestObjectAccessOperator(int, char**) -> int {
     el2["number"] = expected;
     helpers::check_child_eq(el2, "number", expected);
 
+    // access nested key
+    json el3 {};
+    el3["nested"]["number"] = expected;
+    helpers::check_child_eq(el3.at("nested"), "number", expected);
+
     // bad_variant_access
     try {
         json {69}[""];
