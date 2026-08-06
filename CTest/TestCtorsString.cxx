@@ -1,22 +1,32 @@
-#include <cassert>
-
+#include "helpers.hxx"
 #include "libjson/json.hxx"
 
 using json = libjson::json;
 
 auto TestCtorsString(int, char**) -> int {
+    const std::string expected {"json"};
+
     // copy
-    const std::string expected {"hello world"};
-    assert(json {expected}.as<std::string>() == expected);
-    assert((json {} = expected).as<std::string>() == expected);
+    const json el0 {expected};
+    helpers::check_eq(el0, expected);
+
+    const auto el1(json {} = expected);
+    helpers::check_eq(el1, expected);
 
     // move
-    assert(json {"hello world"}.as<std::string>() == expected);
-    assert((json {} = "hello world").as<std::string>() == expected);
-
     auto buffer {expected};
-    assert(json {std::move(buffer)}.as<std::string>() == expected);
-    assert(buffer.empty());
+
+    const json el2 {std::move(buffer)};
+    helpers::check_eq(el2, expected);
+
+    if (!buffer.empty()) throw "Buffer not moved";
+
+    buffer = expected;
+
+    const auto el3(json {} = std::move(buffer));
+    helpers::check_eq(el3, expected);
+
+    if (!buffer.empty()) throw "Buffer not moved";
 
     return 0;
 }

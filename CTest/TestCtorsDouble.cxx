@@ -1,18 +1,24 @@
-#include <cassert>
-
+#include "helpers.hxx"
 #include "libjson/json.hxx"
 
 using json = libjson::json;
 
 auto TestCtorsDouble(int, char**) -> int {
+    const double expected {69.420};
+
     // copy
-    [[maybe_unused]] const double expected {420.0};
-    assert(json {expected}.as<int>() == expected);
-    assert((json {} = expected).as<int>() == expected);
+    const json el0 {expected};
+    helpers::check_eq(el0, expected);
+
+    const auto el1(json {} = expected);
+    helpers::check_eq(el1, expected);
 
     // move
-    assert(json {420.0}.as<int>() == expected);
-    assert((json {} = 420.0).as<int>() == expected);
+    const auto el2 {69.420};
+    helpers::check_eq(el2, expected);
+
+    const auto el3(json {} = 69.420);
+    helpers::check_eq(el1, expected);
 
     return 0;
 }
