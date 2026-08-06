@@ -245,6 +245,64 @@ class json final {
     }
 
     /**
+     * @brief Add data to the end of the array
+     *
+     * @param val The data to add
+     */
+    auto push_back(const json& val) -> void {
+        if (!_hasValue) {
+            _hasValue = true;
+            _value    = std::make_unique<array_t>(array_t {});
+        }
+
+        if (!holds_alternative<array_t>()) {
+            auto buffer {std::visit(
+                [](auto& val) -> json {
+                    using T = decltype(val);
+
+                    if constexpr (requires(T x) { *x; })
+                        return {*val};
+                    else
+                        return {val};
+                },
+                _value)};
+
+            _value = std::make_unique<array_t>(array_t {std::move(buffer)});
+        }
+
+        std::get<array_ptr_t>(_value)->push_back(val);
+    }
+
+    /**
+     * @brief Add data to the end of the array
+     *
+     * @param val The data to add
+     */
+    auto push_back(json&& val) -> void {
+        if (!_hasValue) {
+            _hasValue = true;
+            _value    = std::make_unique<array_t>(array_t {});
+        }
+
+        if (!holds_alternative<array_t>()) {
+            auto buffer {std::visit(
+                [](auto& val) -> json {
+                    using T = decltype(val);
+
+                    if constexpr (requires(T x) { *x; })
+                        return {*val};
+                    else
+                        return {val};
+                },
+                _value)};
+
+            _value = std::make_unique<array_t>(array_t {std::move(buffer)});
+        }
+
+        std::get<array_ptr_t>(_value)->push_back(std::move(val));
+    }
+
+    /**
      * @brief Returns a reference to the element in the object with the
      * specified key
      *
