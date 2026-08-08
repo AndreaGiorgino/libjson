@@ -22,6 +22,8 @@ set(
     TestDecodeEmpty.cxx
     TestDecodeSingleValue.cxx
     TestDecodeSampleData.cxx
+    TestDecodeArrayUnclosed.cxx
+    TestDecodeObjectUnclosed.cxx
 )
 
 create_test_sourcelist(
