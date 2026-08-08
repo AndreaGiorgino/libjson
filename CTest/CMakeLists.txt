@@ -21,6 +21,7 @@ set(
     # json decoding
     TestDecodeEmpty.cxx
     TestDecodeSingleValue.cxx
+    TestDecodeSampleData.cxx
 )
 
 create_test_sourcelist(
