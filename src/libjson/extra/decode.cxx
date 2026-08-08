@@ -175,7 +175,7 @@ auto parse_object(std::istream& is) -> json {
             "Unclosed object opened at position {}", (std::size_t)start + 1));
 
     is.ignore();
-    return {};
+    return buffer;
 }
 
 auto parse_array(std::istream& is) -> json {
@@ -248,9 +248,9 @@ auto parse_value(std::istream& is) -> json {
 
         try {
             if (buffer.find('.') != std::string::npos)
-                return {std::stod(buffer)};
+                return std::stod(buffer);
             else
-                return {std::stoi(buffer)};
+                return std::stoi(buffer);
         } catch (...) {
             throw parse_error(
                 std::format("Cannot parse number at position {}: {}",
@@ -263,9 +263,9 @@ auto parse_value(std::istream& is) -> json {
         if (buffer == "null")
             return {};
         else if (buffer == "false")
-            return {false};
+            return false;
         else if (buffer == "true")
-            return {true};
+            return true;
 
         throw parse_error(std::format("Unexpected literal at position {}: {}",
             (std::size_t)start + 1, buffer));
@@ -295,7 +295,7 @@ auto decode(std::istream& is) -> json {
     if (!is) throw std::runtime_error("Invalid stream provided");
 
     skipws(is);
-    if (is.eof()) return {}; // empty file
+    if (is.eof()) return {};
 
     const auto ret {parse(is)};
 
