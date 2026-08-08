@@ -23,7 +23,9 @@ set(
     TestDecodeSingleValue.cxx
     TestDecodeSampleData.cxx
     TestDecodeArrayUnclosed.cxx
+    TestDecodeArrayTrailingComma.cxx
     TestDecodeObjectUnclosed.cxx
+    TestDecodeObjectTrailingComma.cxx
 )
 
 create_test_sourcelist(
