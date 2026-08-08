@@ -1,11 +1,11 @@
-#include <fstream>
+#include <sstream>
 
 #include "libjson/extra/decode.hxx"
 
 auto TestDecodeEmpty(int, char**) -> int {
-    std::ifstream ifs {"TestFiles/empty.json"};
+    std::stringstream ss {};
 
-    const auto el {libjson::decode(ifs)};
+    const auto el {libjson::decode(ss)};
     if (el.has_value()) throw "Unexpected content";
 
     return 0;
