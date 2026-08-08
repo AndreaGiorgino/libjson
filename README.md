@@ -47,10 +47,14 @@ cmake -B build \
 ./build/example/example
 ```
 
-
 ## Usage
 
 ```cpp
+#include <iostream>
+#include <sstream>
+
+#include "libjson/json.hxx"
+
 using namespace libjson;
 
 auto main(int, char**) -> int {
@@ -58,14 +62,28 @@ auto main(int, char**) -> int {
     {
         "name": "John Smith",
         "age": 25,
-        "city": "London"
+        "city": {
+            "name": "London"
+        },
     }
     )"
 
-    ...
+    auto root {decode(ss)};
+    std::cout
+        << root["name"].as<std::string>() << " from "
+        << root["city"]["name"].as<std::string>() << " is "
+        << root["age"].as<int>() << " years old."
+        << std::endl;
 
     return 0;
 }
 ```
 
 > Look at [example](example) for more
+
+## Missing features
+
+- Numbers parsing:
+    - Long numbers
+    - Exponent
+    - Exponent positive sign
