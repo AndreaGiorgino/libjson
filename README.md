@@ -83,7 +83,15 @@ auto main(int, char**) -> int {
 
 ## Missing features
 
-- Numbers parsing:
-    - Long numbers
-    - Exponent
-    - Exponent positive sign
+- Number parsing:
+    - Handle long numbers
+    - Handle exponent
+    - Handle positive exponent
+- String parsing:
+    - Handle escaped characters 
+- Decoding:
+    - Decode json string
+- Encoding:
+    - Encode json
+    - Encode with indentation
+    - Encode json string
