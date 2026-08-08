@@ -17,6 +17,8 @@ set(
     TestArrayAccessOperator.cxx
     TestCtorsObject.cxx
     TestObjectAccessOperator.cxx
+    # json decoding
+    TestDecodeEmpty.cxx
 )
 
 create_test_sourcelist(
