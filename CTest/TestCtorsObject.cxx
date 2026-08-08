@@ -6,33 +6,33 @@ using object_t = libjson::object_t;
 
 auto TestCtorsObject(int, char**) -> int {
     const object_t expected {
-        {"number",  69    },
+        {"number", 69    },
         {"string", "json"},
     };
 
     // copy
     const json el0 {expected};
-    helpers::check_child_eq(el0, "number", expected.at("number").as<int>());
-    helpers::check_child_eq(el0, "string", expected.at("string").as<std::string>());
+    helpers::check_eq<int>(el0.at("number"), expected.at("number"));
+    helpers::check_eq<std::string>(el0.at("string"), expected.at("string"));
 
     const auto el1(json {} = expected);
-    helpers::check_child_eq(el1, "number", expected.at("number").as<int>());
-    helpers::check_child_eq(el1, "string", expected.at("string").as<std::string>());
+    helpers::check_eq<int>(el1.at("number"), expected.at("number"));
+    helpers::check_eq<std::string>(el1.at("string"), expected.at("string"));
 
     // move
     auto buffer = expected;
 
     const json el2 {std::move(buffer)};
-    helpers::check_child_eq(el2, "number", expected.at("number").as<int>());
-    helpers::check_child_eq(el2, "string", expected.at("string").as<std::string>());
+    helpers::check_eq<int>(el2.at("number"), expected.at("number"));
+    helpers::check_eq<std::string>(el2.at("string"), expected.at("string"));
 
     if (!buffer.empty()) throw "Buffer not moved";
 
     buffer = expected;
 
     const auto el3(json {} = std::move(buffer));
-    helpers::check_child_eq(el3, "number", expected.at("number").as<int>());
-    helpers::check_child_eq(el3, "string", expected.at("string").as<std::string>());
+    helpers::check_eq<int>(el3.at("number"), expected.at("number"));
+    helpers::check_eq<std::string>(el3.at("string"), expected.at("string"));
 
     if (!buffer.empty()) throw "Buffer not moved";
 

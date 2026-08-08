@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.24)
 
 set(
     SOURCE_FILES
+
+    # json class
     TestCtorsBool.cxx
     TestCtorsInt.cxx
     TestCtorsDouble.cxx

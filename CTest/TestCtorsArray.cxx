@@ -9,27 +9,27 @@ auto TestCtorsArray(int, char**) -> int {
 
     // copy
     const json el0 {expected};
-    helpers::check_child_eq(el0, 0, expected[0].as<int>());
-    helpers::check_child_eq(el0, 1, expected[1].as<std::string>());
+    helpers::check_eq<int>(el0.at(0), expected[0]);
+    helpers::check_eq<std::string>(el0.at(1), expected[1]);
 
     const auto el1(json {} = expected);
-    helpers::check_child_eq(el1, 0, expected[0].as<int>());
-    helpers::check_child_eq(el1, 1, expected[1].as<std::string>());
+    helpers::check_eq<int>(el1.at(0), expected[0]);
+    helpers::check_eq<std::string>(el1.at(1), expected[1]);
 
     // move
     auto buffer = expected;
 
     const json el2 {std::move(buffer)};
-    helpers::check_child_eq(el2, 0, expected[0].as<int>());
-    helpers::check_child_eq(el2, 1, expected[1].as<std::string>());
+    helpers::check_eq<int>(el2.at(0), expected[0]);
+    helpers::check_eq<std::string>(el2.at(1), expected[1]);
 
     if (!buffer.empty()) throw "Buffer not moved";
 
     buffer = expected;
 
     const auto el3(json {} = std::move(buffer));
-    helpers::check_child_eq(el3, 0, expected[0].as<int>());
-    helpers::check_child_eq(el3, 1, expected[1].as<std::string>());
+    helpers::check_eq<int>(el3.at(0), expected[0]);
+    helpers::check_eq<std::string>(el3.at(1), expected[1]);
 
     if (!buffer.empty()) throw "Buffer not moved";
 
