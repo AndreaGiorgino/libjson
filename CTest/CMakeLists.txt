@@ -27,6 +27,7 @@ set(
     TestDecodeObjectUnclosed.cxx
     TestDecodeObjectInvalidKey.cxx
     TestDecodeObjectTrailingComma.cxx
+    TestDecodeInvalidLiteral.cxx
 )
 
 create_test_sourcelist(
