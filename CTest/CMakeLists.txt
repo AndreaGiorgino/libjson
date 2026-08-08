@@ -25,6 +25,7 @@ set(
     TestDecodeArrayUnclosed.cxx
     TestDecodeArrayTrailingComma.cxx
     TestDecodeObjectUnclosed.cxx
+    TestDecodeObjectInvalidKey.cxx
     TestDecodeObjectTrailingComma.cxx
 )
 
