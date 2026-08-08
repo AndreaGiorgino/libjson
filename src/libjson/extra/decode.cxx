@@ -1,9 +1,8 @@
-#include "libjson/extra/json.hxx"
-
 #include <cassert>
 #include <functional>
 #include <sstream>
 
+#include "libjson/extra/json.hxx"
 #include "libjson/parse_error.hxx"
 
 namespace libjson {
@@ -168,7 +167,7 @@ auto parse_object(std::istream& is) -> json {
         else
             throw parse_error(
                 std::format("Unexpected character at position {}: {}",
-                    (std::size_t)is.tellg() + 1, ch));
+                    (std::size_t)is.tellg() + 1, (char)ch));
     }
 
     if (is.eof() || is.peek() != '}')
@@ -213,7 +212,7 @@ auto parse_array(std::istream& is) -> json {
         else
             throw parse_error(
                 std::format("Unexpected character at position {}: {}",
-                    (std::size_t)is.tellg() + 1, ch));
+                    (std::size_t)is.tellg() + 1, (char)ch));
     }
 
     if (is.eof() || is.peek() != ']')
@@ -271,8 +270,8 @@ auto parse_value(std::istream& is) -> json {
             (std::size_t)start + 1, buffer));
     }
 
-    throw parse_error(std::format(
-        "Unexpected character at position {}: {}", (std::size_t)start + 1, ch));
+    throw parse_error(std::format("Unexpected character at position {}: {}",
+        (std::size_t)start + 1, (char)ch));
 }
 
 auto parse(std::istream& is) -> json {
