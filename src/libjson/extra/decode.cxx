@@ -241,9 +241,10 @@ auto parse_value(std::istream& is) -> json {
 
         is.ignore();
         return buffer;
-    } else if (std::isdigit(ch)) {
-        std::string buffer {get_until(
-            is, [](const auto ch) { return !std::isdigit(ch) && ch != '.'; })};
+    } else if (ch == '-' || std::isdigit(ch)) {
+        std::string buffer {get_until(is, [](const auto ch) {
+            return ch != '.' && ch != '-' && !std::isdigit(ch);
+        })};
 
         try {
             if (buffer.find('.') != std::string::npos)
