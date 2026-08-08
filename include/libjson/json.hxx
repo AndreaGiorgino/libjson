@@ -74,17 +74,17 @@ class json final {
 
     json(const json& rhs);
 
-    template <typename T>
-        requires(variant_member_v<T> && !ptr_allocated_v<T>)
-    json(const T& rhs) : _hasValue(true),
-                         _value(rhs) {}
+    template <typename Tp>
+        requires(variant_member_v<Tp> && !ptr_allocated_v<Tp>)
+    explicit json(const Tp& rhs) : _hasValue(true),
+                                   _value(rhs) {}
 
-    template <typename T>
-        requires(ptr_allocated_v<T>)
-    json(const T& rhs) : _hasValue(true) {
+    template <typename Tp>
+        requires(ptr_allocated_v<Tp>)
+    explicit json(const Tp& rhs) : _hasValue(true) {
         using target_t
-            = std::conditional_t<std::constructible_from<std::string, T>,
-                std::string, std::remove_cvref_t<T>>;
+            = std::conditional_t<std::constructible_from<std::string, Tp>,
+                std::string, std::remove_cvref_t<Tp>>;
 
         _value = std::make_unique<target_t>(rhs);
     }
