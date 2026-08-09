@@ -53,7 +53,7 @@ cmake -B build \
 #include <iostream>
 #include <sstream>
 
-#include "libjson/json.hxx"
+#include "libjson/extra/decode.hxx"
 
 using namespace libjson;
 
@@ -64,16 +64,14 @@ auto main(int, char**) -> int {
         "age": 25,
         "city": {
             "name": "London"
-        },
+        }
     }
-    )"
+    )"};
 
-    auto root {decode(ss)};
-    std::cout
-        << root["name"].as<std::string>() << " from "
-        << root["city"]["name"].as<std::string>() << " is "
-        << root["age"].as<int>() << " years old."
-        << std::endl;
+    auto root {libjson::decode(ss)};
+    std::cout << root["name"].as<std::string>() << " from "
+              << root["city"]["name"].as<std::string>() << " is "
+              << root["age"].as<int>() << " years old." << std::endl;
 
     return 0;
 }
@@ -87,9 +85,8 @@ auto main(int, char**) -> int {
     - Handle long numbers
     - Handle exponent
     - Handle positive exponent
-- Decoding:
-    - Decode json string
 - Encoding:
     - Encode json
     - Encode with indentation
-    - Encode json string
+    - Encode string
+- ostream overloading
