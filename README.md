@@ -87,8 +87,6 @@ auto main(int, char**) -> int {
     - Handle long numbers
     - Handle exponent
     - Handle positive exponent
-- String parsing:
-    - Handle escaped characters 
 - Decoding:
     - Decode json string
 - Encoding:
