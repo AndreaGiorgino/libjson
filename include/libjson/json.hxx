@@ -160,7 +160,7 @@ class json final {
 
    public: // methods
     /**
-     * @brief Check if a value is being hold
+     * @brief Check if a value is being stored
      * @return The result of the check
      */
     [[nodiscard]] auto has_value(void) const noexcept -> bool;
@@ -223,7 +223,7 @@ class json final {
     }
 
     /**
-     * @brief Returns a reference to the element in the array at the specified
+     * @brief Get a reference to the element in the array at the specified
      * location
      *
      * @param index The position of the element
@@ -241,7 +241,7 @@ class json final {
     }
 
     /**
-     * @brief Returns a reference to the element in the array at the specified
+     * @brief Get a reference to the element in the array at the specified
      * location
      *
      * @param index The position of the element
@@ -317,7 +317,7 @@ class json final {
     }
 
     /**
-     * @brief Returns a reference to the element in the object with the
+     * @brief Get a reference to the element in the object with the
      * specified key
      *
      * @param key The key of the element
@@ -336,7 +336,7 @@ class json final {
     }
 
     /**
-     * @brief Returns a reference to the element in the object with the
+     * @brief Get a reference to the element in the object with the
      * specified key. Insert it if it does not exist
      *
      * @param key The key of the element
