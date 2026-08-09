@@ -21,12 +21,13 @@ set(
     # json decoding
     TestDecodeEmpty.cxx
     TestDecodeSingleValue.cxx
-    TestDecodeSampleData.cxx
+    TestDecodeStringEscape.cxx
     TestDecodeArrayUnclosed.cxx
     TestDecodeArrayTrailingComma.cxx
     TestDecodeObjectUnclosed.cxx
     TestDecodeObjectInvalidKey.cxx
     TestDecodeObjectTrailingComma.cxx
+    TestDecodeSampleData.cxx
     TestDecodeInvalidLiteral.cxx
 )
 
