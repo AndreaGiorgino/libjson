@@ -11,7 +11,7 @@ auto TestDecodeObjectInvalidKey(int, char**) -> int {
     )"};
 
     try {
-        libjson::decode(ss);
+        (void)libjson::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {

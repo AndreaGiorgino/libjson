@@ -7,7 +7,7 @@ auto TestDecodeArrayUnclosed(int, char**) -> int {
     std::stringstream ss {"["};
 
     try {
-        libjson::decode(ss);
+        (void)libjson::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {

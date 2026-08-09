@@ -7,7 +7,7 @@ auto TestDecodeInvalidLiteral(int, char**) -> int {
     std::stringstream ss {"test"};
 
     try {
-        libjson::decode(ss);
+        (void)libjson::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {
