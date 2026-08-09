@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <memory>
 #include <unordered_map>
 #include <variant>
@@ -354,6 +355,54 @@ class json final {
         }
 
         return (*std::get<object_ptr_t>(_value))[std::string {key}];
+    }
+
+    /**
+     * @brief Copy data to the object
+     *
+     * @param key The key
+     * @param val The data to add
+     *
+     * @throws std::runtime_error If the key already exists
+     * @throws std::bad_variant_access If the stored value is not an object
+     */
+    auto insert(std::string_view key, const json& val) -> void {
+        if (!_hasValue) {
+            _hasValue = true;
+            _value    = std::make_unique<object_t>(object_t {});
+        }
+
+        const std::string str {key};
+        auto& ptr {std::get<object_ptr_t>(_value)};
+
+        if (ptr->contains(str))
+            throw std::runtime_error(
+                std::format("Key already present in object: {}", key));
+        ptr->insert({str, val});
+    }
+
+    /**
+     * @brief Move data to the object
+     *
+     * @param key The key
+     * @param val The data to add
+     *
+     * @throws std::runtime_error If the key already exists
+     * @throws std::bad_variant_access If the stored value is not an object
+     */
+    auto insert(std::string_view key, json&& val) -> void {
+        if (!_hasValue) {
+            _hasValue = true;
+            _value    = std::make_unique<object_t>(object_t {});
+        }
+
+        const std::string str {key};
+        auto& ptr {std::get<object_ptr_t>(_value)};
+
+        if (ptr->contains(str))
+            throw std::runtime_error(
+                std::format("Key already present in object: {}", key));
+        ptr->insert({str, std::move(val)});
     }
 
    private: // definitions
