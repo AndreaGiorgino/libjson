@@ -38,6 +38,14 @@ auto throw_eof(std::istream& is) -> void;
 auto skipws(std::istream& is) noexcept -> void;
 
 /**
+ * @brief Append utf8 character to string
+ *
+ * @param codePoint The character to append
+ * @param out The string to append to
+ */
+void append_utf8(char32_t codePoint, std::string& out);
+
+/**
  * @brief Get characters until the stop condition is met
  *
  * @param is The input stream
@@ -102,6 +110,24 @@ auto throw_eof(std::istream& is) -> void {
 
 auto skipws(std::istream& is) noexcept -> void {
     while (!is.eof() && std::isspace(is.peek())) is.ignore();
+}
+
+void append_utf8(char32_t codePoint, std::string& out) {
+    if (codePoint <= 0x7F) {
+        out.push_back((char)(codePoint));
+    } else if (codePoint <= 0x7FF) {
+        out.push_back((char)(0xC0 | ((codePoint >> 6) & 0x1F)));
+        out.push_back((char)(0x80 | (codePoint & 0x3F)));
+    } else if (codePoint <= 0xFFFF) {
+        out.push_back((char)(0xE0 | ((codePoint >> 12) & 0x0F)));
+        out.push_back((char)(0x80 | ((codePoint >> 6) & 0x3F)));
+        out.push_back((char)(0x80 | (codePoint & 0x3F)));
+    } else if (codePoint <= 0x10FFFF) {
+        out.push_back((char)(0xF0 | ((codePoint >> 18) & 0x07)));
+        out.push_back((char)(0x80 | ((codePoint >> 12) & 0x3F)));
+        out.push_back((char)(0x80 | ((codePoint >> 6) & 0x3F)));
+        out.push_back((char)(0x80 | (codePoint & 0x3F)));
+    }
 }
 
 auto get_until(std::istream& is,
@@ -246,39 +272,67 @@ auto parse_value(std::istream& is) -> json {
             });
 
             if (is.peek() != '\\') break;
+            is.ignore();
 
             // handle escaped characters
-            buffer += is.get();
             if (is.eof()) break;
 
             switch (is.peek()) {
                 case '"':
                 case '\\':
                 case '/':
-                case 'b': // backspace
-                case 'f': // form feed
-                case 'n': // newline
-                case 'r': // carriage return
-                case 't': // tab
                     buffer += is.get();
                     break;
-                case 'u': // unicode
-                    buffer += is.get();
+                case 'b': // backspace
+                    is.ignore();
+
+                    buffer += '\b';
+                    break;
+                case 'f': // form feed
+                    is.ignore();
+
+                    buffer += '\f';
+                    break;
+                case 'n': // newline
+                    is.ignore();
+
+                    buffer += '\n';
+                    break;
+                case 'r': // carriage return
+                    is.ignore();
+
+                    buffer += '\r';
+                    break;
+                case 't': // tab
+                    is.ignore();
+
+                    buffer += '\t';
+                    break;
+                case 'u': { // unicode
+                    is.ignore();
+
+                    std::string hex {};
                     for (int i {}; i < 4; i++) {
                         if (is.eof())
                             throw parse_error(std::format(
                                 "Incomplete unicode character at position {}",
-                                (std::size_t)is.tellg() - i));
+                                (std::size_t)is.tellg() + i + 1));
 
-                        const auto u {is.get()};
-                        if (!std::isdigit(u) && !('A' <= u && u <= 'F'))
-                            throw parse_error(std::format(
-                                "Invalid unicode character at position {}",
-                                (std::size_t)is.tellg() - i));
-                        else
-                            buffer += u;
+                        hex += is.get();
                     }
+
+                    try {
+                        const auto codePoint {
+                            (uint16_t)std::stoul(hex, NULL, 16)};
+                        append_utf8(codePoint, buffer);
+                    } catch (...) {
+                        throw parse_error(std::format(
+                            "Invalid unicode sequence at position {}: \\u{}",
+                            (std::size_t)is.tellg() - 3, hex));
+                    }
+
                     break;
+                }
                 default:
                     throw parse_error(std::format(
                         "Invalid escape sequence at position {}: \\{}",
