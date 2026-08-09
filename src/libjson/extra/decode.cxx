@@ -231,8 +231,60 @@ auto parse_value(std::istream& is) -> json {
 
     if (ch == '"') {
         is.ignore();
-        std::string buffer {get_until(
-            is, [](const auto ch) { return ch == '"' || ch == '\n'; })};
+        std::string buffer {};
+
+        while (!is.eof()) {
+            buffer += get_until(is, [](const auto ch) {
+                switch (ch) {
+                    case '"':
+                    case '\n':
+                    case '\\':
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+
+            if (is.peek() != '\\') break;
+
+            // handle escaped characters
+            buffer += is.get();
+            if (is.eof()) break;
+
+            switch (is.peek()) {
+                case '"':
+                case '\\':
+                case '/':
+                case 'b': // backspace
+                case 'f': // form feed
+                case 'n': // newline
+                case 'r': // carriage return
+                case 't': // tab
+                    buffer += is.get();
+                    break;
+                case 'u': // unicode
+                    buffer += is.get();
+                    for (int i {}; i < 4; i++) {
+                        if (is.eof())
+                            throw parse_error(std::format(
+                                "Incomplete unicode character at position {}",
+                                (std::size_t)is.tellg() - i));
+
+                        const auto u {is.get()};
+                        if (!std::isdigit(u) && !('A' <= u && u <= 'F'))
+                            throw parse_error(std::format(
+                                "Invalid unicode character at position {}",
+                                (std::size_t)is.tellg() - i));
+                        else
+                            buffer += u;
+                    }
+                    break;
+                default:
+                    throw parse_error(std::format(
+                        "Invalid escape sequence at position {}: \\{}",
+                        (std::size_t)is.tellg(), (char)is.peek()));
+            }
+        }
 
         if (is.eof() || is.peek() != '"')
             throw parse_error(
