@@ -224,7 +224,7 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the array at the specified
+     * @brief Get a reference to the element in the stored array at the specified
      * location
      *
      * @param index The position of the element
@@ -242,7 +242,7 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the array at the specified
+     * @brief Get a reference to the element in the stored array at the specified
      * location
      *
      * @param index The position of the element
@@ -260,7 +260,7 @@ class json final {
     }
 
     /**
-     * @brief Copy data to the end of the array
+     * @brief Copy data to the end of the stored array
      *
      * @param val The data to add
      */
@@ -289,7 +289,7 @@ class json final {
     }
 
     /**
-     * @brief Move data to the end of the array
+     * @brief Move data to the end of the stored array
      *
      * @param val The data to add
      */
@@ -318,7 +318,7 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the object with the
+     * @brief Get a reference to the element in the stored object with the
      * specified key
      *
      * @param key The key of the element
@@ -337,7 +337,7 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the object with the
+     * @brief Get a reference to the element in the stored object with the
      * specified key. Insert it if it does not exist
      *
      * @param key The key of the element
@@ -358,7 +358,7 @@ class json final {
     }
 
     /**
-     * @brief Copy data to the object
+     * @brief Copy data to the stored object
      *
      * @param key The key
      * @param val The data to add
@@ -382,7 +382,7 @@ class json final {
     }
 
     /**
-     * @brief Move data to the object
+     * @brief Move data to the stored object
      *
      * @param key The key
      * @param val The data to add
