@@ -22,6 +22,7 @@ set(
     TestDecodeEmpty.cxx
     TestDecodeSingleValue.cxx
     TestDecodeStringEscape.cxx
+    TestDecodeStringInvalidEscape.cxx
     TestDecodeArrayUnclosed.cxx
     TestDecodeArrayTrailingComma.cxx
     TestDecodeObjectUnclosed.cxx
