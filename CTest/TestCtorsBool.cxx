@@ -1,7 +1,7 @@
 #include "helpers.hxx"
 #include "libjson/json.hxx"
 
-using json = libjson::json;
+using libjson::json;
 
 auto TestCtorsBool(int, char**) -> int {
     const bool expected {true};

@@ -1,8 +1,8 @@
 #include "helpers.hxx"
 #include "libjson/json.hxx"
 
-using json     = libjson::json;
-using object_t = libjson::object_t;
+using libjson::json;
+using libjson::object_t;
 
 auto TestCtorsObject(int, char**) -> int {
     const object_t expected {
@@ -26,7 +26,7 @@ auto TestCtorsObject(int, char**) -> int {
     helpers::check_eq<int>(el2.at("number"), expected.at("number"));
     helpers::check_eq<std::string>(el2.at("string"), expected.at("string"));
 
-    if (!buffer.empty()) throw "Buffer not moved";
+    if (!buffer.empty()) throw std::runtime_error("Buffer not moved");
 
     buffer = expected;
 
@@ -34,7 +34,7 @@ auto TestCtorsObject(int, char**) -> int {
     helpers::check_eq<int>(el3.at("number"), expected.at("number"));
     helpers::check_eq<std::string>(el3.at("string"), expected.at("string"));
 
-    if (!buffer.empty()) throw "Buffer not moved";
+    if (!buffer.empty()) throw std::runtime_error("Buffer not moved");
 
     return 0;
 }

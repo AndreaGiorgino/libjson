@@ -1,8 +1,8 @@
 #include "helpers.hxx"
 #include "libjson/json.hxx"
 
-using json    = libjson::json;
-using array_t = libjson::array_t;
+using libjson::json;
+using libjson::array_t;
 
 auto TestArrayPushData(int, char**) -> int {
     const std::string expected {"json"};
@@ -24,13 +24,13 @@ auto TestArrayPushData(int, char**) -> int {
     el2.push_back(std::move(buffer));
     helpers::check_eq(el2[0], expected);
 
-    if (!buffer.empty()) throw "buffer not moved";
+    if (!buffer.empty()) throw std::runtime_error("Buffer not moved");
 
     // trasform and push
     json el3 {69};
     el3.push_back(expected);
-    helpers::check_eq(el3[0], 69);
-    helpers::check_eq(el3[1], expected);
+    helpers::check_eq(el3.at(0), 69);
+    helpers::check_eq(el3.at(1), expected);
 
     return 0;
 }

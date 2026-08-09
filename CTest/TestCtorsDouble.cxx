@@ -1,7 +1,7 @@
 #include "helpers.hxx"
 #include "libjson/json.hxx"
 
-using json = libjson::json;
+using libjson::json;
 
 auto TestCtorsDouble(int, char**) -> int {
     const double expected {69.420};

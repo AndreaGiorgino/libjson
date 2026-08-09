@@ -32,7 +32,7 @@ auto encode(json&& el, std::ostream& os) -> void;
  *
  * @throws parse_error If the stream is malformed
  */
-auto decode(std::string_view raw) -> json;
+[[nodiscard]] auto decode(std::string_view raw) -> json;
 
 /**
  * @brief Decode json from stream
@@ -42,5 +42,5 @@ auto decode(std::string_view raw) -> json;
  *
  * @throws parse_error If the stream is malformed
  */
-auto decode(std::istream& is) -> json;
+[[nodiscard]] auto decode(std::istream& is) -> json;
 } // namespace libjson

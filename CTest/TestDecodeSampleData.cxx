@@ -3,7 +3,7 @@
 #include "helpers.hxx"
 #include "libjson/extra/decode.hxx"
 
-using object_t = libjson::object_t;
+using libjson::object_t;
 
 auto TestDecodeSampleData(int, char**) -> int {
     const object_t expected {
