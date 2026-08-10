@@ -413,6 +413,9 @@ class json final {
      * @param indent The amount of spaces to use for indentation
      */
     [[nodiscard]] auto encode(std::size_t indent = 4) const -> std::string;
+
+    friend auto operator <<(std::ostream& os, const json& node) -> std::ostream&;
+
    private: // definitions
     /*
      * @brief Represents a pointer to an array_t

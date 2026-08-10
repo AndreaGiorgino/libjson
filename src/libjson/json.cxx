@@ -50,6 +50,14 @@ auto json::has_value(void) const noexcept -> bool {
 auto json::encode(std::size_t indent) const -> std::string {
     return _encode_recursive(*this, indent, 0);
 }
+
+auto operator <<(std::ostream& os, const json& node) -> std::ostream& {
+    os << node.encode(os.width());
+    os.width(0);
+
+    return os;
+}
+
 auto json::_deep_copy(const value_t_internal& val) noexcept
     -> value_t_internal {
     return std::visit(
