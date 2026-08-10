@@ -7,6 +7,8 @@
 #include <vector>
 
 namespace libjson {
+#define MAX_DEPTH 16
+
 /**
  * @class json
  * @brief Represents a json element
@@ -15,17 +17,17 @@ namespace libjson {
 class json;
 
 /**
- * @brief Represents a json array value
+ * @brief Represents a json array node
  */
 using array_t = std::vector<json>;
 
 /**
- * @brief Represents a json object value
+ * @brief Represents a json object node
  */
 using object_t = std::unordered_map<std::string, json>;
 
 /**
- * @brief Represents a json value
+ * @brief Represents a json node
  */
 using value_t = std::variant<bool, int, double, std::string, array_t, object_t>;
 
@@ -224,8 +226,8 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the stored array at the specified
-     * location
+     * @brief Get a reference to the element in the stored array at the
+     * specified location
      *
      * @param index The position of the element
      * @return The reference to the element
@@ -242,8 +244,8 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the stored array at the specified
-     * location
+     * @brief Get a reference to the element in the stored array at the
+     * specified location
      *
      * @param index The position of the element
      * @return The reference to the element
@@ -262,9 +264,9 @@ class json final {
     /**
      * @brief Copy data to the end of the stored array
      *
-     * @param val The data to add
+     * @param node The data to add
      */
-    auto push_back(const json& val) -> void {
+    auto push_back(const json& node) -> void {
         if (!_hasValue) {
             _hasValue = true;
             _value    = std::make_unique<array_t>(array_t {});
@@ -272,28 +274,28 @@ class json final {
 
         if (!holds_alternative<array_t>()) {
             auto buffer {std::visit(
-                [](auto& val) -> json {
-                    using Tp = decltype(val);
+                [](auto& node) -> json {
+                    using Tp = decltype(node);
 
                     if constexpr (requires(Tp x) { *x; })
-                        return {*val};
+                        return {*node};
                     else
-                        return {val};
+                        return {node};
                 },
                 _value)};
 
             _value = std::make_unique<array_t>(array_t {std::move(buffer)});
         }
 
-        std::get<array_ptr_t>(_value)->push_back(val);
+        std::get<array_ptr_t>(_value)->push_back(node);
     }
 
     /**
      * @brief Move data to the end of the stored array
      *
-     * @param val The data to add
+     * @param node The data to add
      */
-    auto push_back(json&& val) -> void {
+    auto push_back(json&& node) -> void {
         if (!_hasValue) {
             _hasValue = true;
             _value    = std::make_unique<array_t>(array_t {});
@@ -301,20 +303,20 @@ class json final {
 
         if (!holds_alternative<array_t>()) {
             auto buffer {std::visit(
-                [](auto& val) -> json {
-                    using Tp = decltype(val);
+                [](auto& node) -> json {
+                    using Tp = decltype(node);
 
                     if constexpr (requires(Tp x) { *x; })
-                        return {*val};
+                        return {*node};
                     else
-                        return {val};
+                        return {node};
                 },
                 _value)};
 
             _value = std::make_unique<array_t>(array_t {std::move(buffer)});
         }
 
-        std::get<array_ptr_t>(_value)->push_back(std::move(val));
+        std::get<array_ptr_t>(_value)->push_back(std::move(node));
     }
 
     /**
@@ -361,12 +363,12 @@ class json final {
      * @brief Copy data to the stored object
      *
      * @param key The key
-     * @param val The data to add
+     * @param node The data to add
      *
      * @throws std::runtime_error If the key already exists
      * @throws std::bad_variant_access If the stored value is not an object
      */
-    auto insert(std::string_view key, const json& val) -> void {
+    auto insert(std::string_view key, const json& node) -> void {
         if (!_hasValue) {
             _hasValue = true;
             _value    = std::make_unique<object_t>(object_t {});
@@ -378,19 +380,19 @@ class json final {
         if (ptr->contains(str))
             throw std::runtime_error(
                 std::format("Key already present in object: {}", key));
-        ptr->insert({str, val});
+        ptr->insert({str, node});
     }
 
     /**
      * @brief Move data to the stored object
      *
      * @param key The key
-     * @param val The data to add
+     * @param node The data to add
      *
      * @throws std::runtime_error If the key already exists
      * @throws std::bad_variant_access If the stored value is not an object
      */
-    auto insert(std::string_view key, json&& val) -> void {
+    auto insert(std::string_view key, json&& node) -> void {
         if (!_hasValue) {
             _hasValue = true;
             _value    = std::make_unique<object_t>(object_t {});
@@ -402,7 +404,7 @@ class json final {
         if (ptr->contains(str))
             throw std::runtime_error(
                 std::format("Key already present in object: {}", key));
-        ptr->insert({str, std::move(val)});
+        ptr->insert({str, std::move(node)});
     }
 
    private: // definitions
@@ -430,23 +432,7 @@ class json final {
      * @return The variant copied value
      */
     static auto _deep_copy(const value_t_internal& val) noexcept
-        -> value_t_internal {
-        return std::visit(
-            [](const auto& val) noexcept -> value_t_internal {
-                using clean_t = std::remove_cvref_t<decltype(val)>;
-
-                if constexpr (requires(clean_t x) { *x; }) {
-                    using element_t = typename clean_t::element_type;
-                    using target_t  = std::conditional_t<
-                        std::constructible_from<std::string, element_t>,
-                        std::string, element_t>;
-
-                    return std::make_unique<target_t>(*val);
-                } else
-                    return val;
-            },
-            val);
-    };
+        -> value_t_internal;
 
    private: // members
     bool _hasValue {false};

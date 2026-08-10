@@ -30,4 +30,22 @@ auto json::operator =(json&& rhs) -> json& {
 auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }
+auto json::_deep_copy(const value_t_internal& val) noexcept
+    -> value_t_internal {
+    return std::visit(
+        [](const auto& v) noexcept -> value_t_internal {
+            using clean_t = std::remove_cvref_t<decltype(v)>;
+
+            if constexpr (requires(clean_t x) { *x; }) {
+                using element_t = typename clean_t::element_type;
+                using target_t  = std::conditional_t<
+                    std::constructible_from<std::string, element_t>,
+                    std::string, element_t>;
+
+                return std::make_unique<target_t>(*v);
+            } else
+                return v;
+        },
+        val);
+};
 } // namespace libjson
