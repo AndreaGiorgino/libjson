@@ -118,6 +118,7 @@ auto json::_encode_recursive(
 
                     buffer += ']';
                 } else if constexpr (std::same_as<clean_t, object_ptr_t>) {
+                    // TODO: sort keys
                     buffer += '{';
 
                     if (indent > 0) buffer += '\n';

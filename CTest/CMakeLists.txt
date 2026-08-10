@@ -31,6 +31,9 @@ set(
     TestDecodeObjectTrailingComma.cxx
     TestDecodeSampleData.cxx
     TestDecodeInvalidLiteral.cxx
+
+    # json encoding
+    TestEncode.cxx
 )
 
 create_test_sourcelist(
