@@ -17,18 +17,18 @@ auto TestDecodeSampleData(int, char**) -> int {
 
     std::ifstream ifs {"TestFiles/titanic-passengers.json"};
 
-    const auto root {libjson::decode(ifs)};
+    const auto node {libjson::decode(ifs)};
 
     helpers::check_eq<std::string>(
-        root.at(0).at("lastName"), expected.at("lastName"));
+        node.at(0).at("lastName"), expected.at("lastName"));
     helpers::check_eq<std::string>(
-        root.at(0).at("firstName"), expected.at("firstName"));
-    helpers::check_eq<std::string>(root.at(0).at("age"), expected.at("age"));
+        node.at(0).at("firstName"), expected.at("firstName"));
+    helpers::check_eq<std::string>(node.at(0).at("age"), expected.at("age"));
     helpers::check_eq<std::string>(
-        root.at(0).at("paxClass"), expected.at("paxClass"));
+        node.at(0).at("paxClass"), expected.at("paxClass"));
     helpers::check_eq<bool>(
-        root.at(0).at("passenger"), expected.at("passenger"));
-    helpers::check_eq<bool>(root.at(0).at("survivor"), expected.at("survivor"));
+        node.at(0).at("passenger"), expected.at("passenger"));
+    helpers::check_eq<bool>(node.at(0).at("survivor"), expected.at("survivor"));
 
     return 0;
 }

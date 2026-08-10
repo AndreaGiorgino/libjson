@@ -179,8 +179,8 @@ auto parse_object(std::istream& is) -> json {
         skipws(is);
         throw_eof(is);
 
-        const auto val {parse(is)};
-        buffer[key.as<std::string>()] = std::move(val);
+        const auto node {parse(is)};
+        buffer[key.as<std::string>()] = std::move(node);
 
         skipws(is);
         throw_eof(is);
