@@ -407,6 +407,12 @@ class json final {
         ptr->insert({str, std::move(node)});
     }
 
+    /**
+     * @brief Encode the stored value into json
+     *
+     * @param indent The amount of spaces to use for indentation
+     */
+    [[nodiscard]] auto encode(std::size_t indent = 4) const -> std::string;
    private: // definitions
     /*
      * @brief Represents a pointer to an array_t
@@ -433,6 +439,16 @@ class json final {
      */
     static auto _deep_copy(const value_t_internal& val) noexcept
         -> value_t_internal;
+
+    /**
+     * @brief Encode the node recursively
+     *
+     * @param node The node to encode
+     * @param indent The indentation to apply
+     * @param depth The depth level
+     */
+    static auto _encode_recursive(
+        const json& node, std::size_t indent, std::size_t depth) -> std::string;
 
    private: // members
     bool _hasValue {false};
