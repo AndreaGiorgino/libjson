@@ -1,6 +1,22 @@
 #include "libjson/json.hxx"
 
 namespace libjson {
+/**
+ * @brief Trim left string
+ *
+ * @param str The string to trim
+ */
+auto ltrim(std::string str) noexcept -> std::string;
+
+// ----------------------------------------------------------------------------
+
+auto ltrim(std::string str) noexcept -> std::string {
+    str.erase(
+        str.begin(), std::find_if(str.begin(), str.end(),
+                         [](const auto ch) { return !std::isspace(ch); }));
+    return str;
+}
+
 json::json(const json& rhs)
     : _hasValue(rhs._hasValue),
       _value(_deep_copy(rhs._value)) {}
