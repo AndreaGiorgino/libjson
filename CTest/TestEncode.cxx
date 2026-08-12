@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 
 #include "libjson/json.hxx"
 
@@ -9,12 +8,13 @@ using libjson::object_t;
 
 auto TestEncode(int, char**) -> int {
     const object_t val {
-        {"lastName",  "ABBING"    },
-        {"firstName", "Mr Anthony"},
         {"age",       "41"        },
-        {"paxClass",  "3rd Class" },
+        {"firstName", "Mr Anthony"},
+        {"lastName",  "ABBING"    },
         {"passenger", true        },
-        {"survivor",  false       }
+        {"paxClass",  "3rd Class" },
+        {"survivor",  false       },
+        {"unicode",   "\u03A0"    },
     };
 
     const json node {val};
