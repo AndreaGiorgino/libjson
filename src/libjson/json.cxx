@@ -152,8 +152,33 @@ auto json::_encode_recursive(
 
                     buffer += '}';
                 } else {
-                    // TODO: encode string
-                    buffer += '"' + *v + '"';
+                    buffer += '"';
+
+                    for (const auto& ch : *v) {
+                        switch (ch) {
+                            case '"':
+                            case '\\':
+                            case '/':
+                            case '\b':
+                            case '\f':
+                            case '\n':
+                            case '\r':
+                            case '\t':
+                                buffer += '\\' + ch;
+                                break;
+                            default:
+                                if (ch < 0x20) {
+                                    static constexpr char hex_digits[]
+                                        = "0123456789ABCDEF";
+                                    buffer += "\\u00";
+                                    buffer += hex_digits[(ch >> 4) & 0x0F];
+                                    buffer += hex_digits[ch & 0x0F];
+                                } else
+                                    buffer += ch;
+                        }
+                    }
+
+                    buffer += '"';
                 }
             } else if constexpr (std::same_as<clean_t, bool>)
                 buffer += v ? "true" : "false";
