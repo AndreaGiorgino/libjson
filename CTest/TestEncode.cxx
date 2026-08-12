@@ -1,7 +1,9 @@
 #include <fstream>
+#include <iostream>
 
 #include "libjson/json.hxx"
 
+using libjson::array_t;
 using libjson::json;
 using libjson::object_t;
 
@@ -16,10 +18,10 @@ auto TestEncode(int, char**) -> int {
     };
 
     const json node {val};
-    const auto encoded {node.encode()};
+    const auto encoded {node.encode() + '\n'};
 
     std::ifstream ifs {"TestFiles/sample-data.json"};
-    std::string content {std::istreambuf_iterator {ifs}, {}};
+    const std::string content {std::istreambuf_iterator {ifs}, {}};
 
     if (encoded != content) throw std::runtime_error("Values not equals");
 
