@@ -96,5 +96,3 @@ auto main(int, char**) -> int {
     - Handle long numbers
     - Handle exponent
     - Handle positive exponent
-- Encoding:
-    - Encode string
