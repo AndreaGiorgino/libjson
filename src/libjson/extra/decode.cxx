@@ -2,7 +2,7 @@
 #include <functional>
 #include <sstream>
 
-#include "libjson/extra/json.hxx"
+#include "libjson/json.hxx"
 #include "libjson/parse_error.hxx"
 
 namespace libjson {
@@ -392,11 +392,6 @@ auto parse(std::istream& is) -> json {
     return parse_value(is);
 }
 
-auto decode(std::string_view raw) -> json {
-    std::stringstream ss {raw.data()};
-    return decode(ss);
-}
-
 auto decode(std::istream& is) -> json {
     if (!is) throw std::runtime_error("Invalid stream provided");
 
@@ -409,5 +404,10 @@ auto decode(std::istream& is) -> json {
     if (!is.eof()) throw parse_error("Single value expected at root level");
 
     return ret;
+}
+
+auto decode(std::string_view raw) -> json {
+    std::istringstream ss {raw.data()};
+    return decode(ss);
 }
 } // namespace libjson
