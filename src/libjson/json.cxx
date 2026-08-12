@@ -108,7 +108,7 @@ auto json::_encode_recursive(
                             += _encode_recursive(v->at(i), indent, depth + 1);
 
                         if (i != sz - 1) {
-                            buffer += ", ";
+                            buffer += ",";
                             if (indent > 0) buffer += '\n';
                         }
                     }
@@ -118,7 +118,6 @@ auto json::_encode_recursive(
 
                     buffer += ']';
                 } else if constexpr (std::same_as<clean_t, object_ptr_t>) {
-                    // TODO: sort keys
                     buffer += '{';
 
                     if (indent > 0) buffer += '\n';
@@ -126,17 +125,22 @@ auto json::_encode_recursive(
                     const auto sz {v->size()};
                     std::size_t i {};
 
-                    for (const auto& [k, n] : *v) {
+                    std::vector<std::string> keys;
+                    for (const auto& [k, _] : *v) keys.push_back(k);
+
+                    std::sort(keys.begin(), keys.end());
+
+                    for (const auto& k : keys) {
                         if (indent > 0)
                             buffer += std::format(
                                 "{:{}}", "", indent * (depth + 1));
 
-                        buffer
-                            += std::format("{:?}: ", k)
-                               + ltrim(_encode_recursive(n, indent, depth + 1));
+                        buffer += std::format("{:?}: ", k)
+                                  + ltrim(_encode_recursive(
+                                      v->at(k), indent, depth + 1));
 
                         if (i != sz - 1) {
-                            buffer += ", ";
+                            buffer += ",";
                             if (indent > 0) buffer += '\n';
                         }
 
@@ -151,7 +155,9 @@ auto json::_encode_recursive(
                     // TODO: encode string
                     buffer += '"' + *v + '"';
                 }
-            } else
+            } else if constexpr (std::same_as<clean_t, bool>)
+                buffer += v ? "true" : "false";
+            else
                 buffer += std::to_string(v);
 
             return buffer;
