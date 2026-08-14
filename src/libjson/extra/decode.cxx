@@ -153,12 +153,10 @@ auto parse_object(std::istream& is) -> json {
         throw_eof(is);
 
         if (is.peek() == '}') {
-            if (buffer.size() == 0)
-                break;
-            else
-                throw parse_error(
-                    std::format("Trailing comma encountered at position {}",
-                        (std::size_t)is.tellg() + 1));
+            if (buffer.size() == 0) break;
+            throw parse_error(
+                std::format("Trailing comma encountered at position {}",
+                    (std::size_t)is.tellg() + 1));
         }
 
         const auto key {parse(is)};
@@ -188,12 +186,13 @@ auto parse_object(std::istream& is) -> json {
         const auto ch {is.peek()};
         if (ch == '}')
             break;
-        else if (ch == ',')
+        else if (ch == ',') {
             is.ignore();
-        else
-            throw parse_error(
-                std::format("Unexpected character at position {}: {}",
-                    (std::size_t)is.tellg() + 1, (char)ch));
+            continue;
+        }
+
+        throw parse_error(std::format("Unexpected character at position {}: {}",
+            (std::size_t)is.tellg() + 1, (char)ch));
     }
 
     if (is.eof() || is.peek() != '}')
@@ -217,12 +216,10 @@ auto parse_array(std::istream& is) -> json {
         throw_eof(is);
 
         if (is.peek() == ']') {
-            if (buffer.size() == 0)
-                break;
-            else
-                throw parse_error(
-                    std::format("Trailing comma encountered at position {}",
-                        (std::size_t)is.tellg() + 1));
+            if (buffer.size() == 0) break;
+            throw parse_error(
+                std::format("Trailing comma encountered at position {}",
+                    (std::size_t)is.tellg() + 1));
         }
 
         buffer.push_back(parse(is));
@@ -233,12 +230,13 @@ auto parse_array(std::istream& is) -> json {
         const auto ch {is.peek()};
         if (ch == ']')
             break;
-        else if (ch == ',')
+        else if (ch == ',') {
             is.ignore();
-        else
-            throw parse_error(
-                std::format("Unexpected character at position {}: {}",
-                    (std::size_t)is.tellg() + 1, (char)ch));
+            continue;
+        }
+
+        throw parse_error(std::format("Unexpected character at position {}: {}",
+            (std::size_t)is.tellg() + 1, (char)ch));
     }
 
     if (is.eof() || is.peek() != ']')
@@ -353,10 +351,8 @@ auto parse_value(std::istream& is) -> json {
         })};
 
         try {
-            if (buffer.find('.') != std::string::npos)
-                return std::stod(buffer);
-            else
-                return std::stoi(buffer);
+            if (buffer.find('.') != std::string::npos) return std::stod(buffer);
+            return std::stoi(buffer);
         } catch (...) {
             throw parse_error(
                 std::format("Cannot parse number at position {}: {}",

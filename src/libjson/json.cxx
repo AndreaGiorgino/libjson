@@ -47,6 +47,109 @@ auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }
 
+
+auto json::at(std::size_t index) const -> const json& {
+    if (!_hasValue) throw std::runtime_error("No value is being stored");
+    return std::get<array_ptr_t>(_value)->at(index);
+}
+
+auto json::at(std::string_view key) const -> const json& {
+    if (!_hasValue) throw std::runtime_error("No value is being stored");
+    return std::get<object_ptr_t>(_value)->at(std::string {key});
+}
+
+auto json::operator [](std::string_view key) -> json& {
+    if (!_hasValue) {
+        _hasValue = true;
+        _value    = std::make_unique<object_t>(object_t {});
+    }
+
+    return (*std::get<object_ptr_t>(_value))[std::string {key}];
+}
+
+auto json::operator [](std::size_t index) -> json& {
+    if (!_hasValue) throw std::runtime_error("No value is being stored");
+    return std::get<array_ptr_t>(_value)->at(index);
+}
+
+auto json::push_back(const json& node) -> void {
+    if (!_hasValue) {
+        _hasValue = true;
+        _value    = std::make_unique<array_t>(array_t {});
+    }
+
+    if (!holds_alternative<array_t>()) {
+        auto buffer {std::visit(
+            [](auto& node) -> json {
+                using Tp = decltype(node);
+
+                if constexpr (requires(Tp x) { *x; })
+                    return {*node};
+                else
+                    return {node};
+            },
+            _value)};
+
+        _value = std::make_unique<array_t>(array_t {std::move(buffer)});
+    }
+
+    std::get<array_ptr_t>(_value)->push_back(node);
+}
+
+auto json::push_back(json&& node) -> void {
+    if (!_hasValue) {
+        _hasValue = true;
+        _value    = std::make_unique<array_t>(array_t {});
+    }
+
+    if (!holds_alternative<array_t>()) {
+        auto buffer {std::visit(
+            [](auto& node) -> json {
+                using Tp = decltype(node);
+
+                if constexpr (requires(Tp x) { *x; })
+                    return {*node};
+                else
+                    return {node};
+            },
+            _value)};
+
+        _value = std::make_unique<array_t>(array_t {std::move(buffer)});
+    }
+
+    std::get<array_ptr_t>(_value)->push_back(std::move(node));
+}
+
+auto json::insert(std::string_view key, const json& node) -> void {
+    if (!_hasValue) {
+        _hasValue = true;
+        _value    = std::make_unique<object_t>(object_t {});
+    }
+
+    const std::string str {key};
+    auto& ptr {std::get<object_ptr_t>(_value)};
+
+    if (ptr->contains(str))
+        throw std::runtime_error(
+            std::format("Key already present in object: {}", key));
+    ptr->insert({str, node});
+}
+
+auto json::insert(std::string_view key, json&& node) -> void {
+    if (!_hasValue) {
+        _hasValue = true;
+        _value    = std::make_unique<object_t>(object_t {});
+    }
+
+    const std::string str {key};
+    auto& ptr {std::get<object_ptr_t>(_value)};
+
+    if (ptr->contains(str))
+        throw std::runtime_error(
+            std::format("Key already present in object: {}", key));
+    ptr->insert({str, std::move(node)});
+}
+
 auto json::encode(std::size_t indent) const -> std::string {
     return _encode_recursive(*this, indent, 0);
 }
