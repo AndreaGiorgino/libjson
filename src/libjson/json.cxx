@@ -57,6 +57,20 @@ auto json::size(void) const noexcept -> std::size_t {
         _value);
 }
 
+auto json::empty(void) const noexcept -> bool {
+    if (!_hasValue) return true;
+    return std::visit(
+        [](const auto& val) -> std::size_t {
+            using clean_t = std::remove_cvref_t<decltype(val)>;
+
+            if constexpr (std::same_as<clean_t, object_ptr_t>
+                          || std::same_as<clean_t, array_ptr_t>)
+                return val->empty();
+            return false;
+        },
+        _value);
+}
+
 auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }

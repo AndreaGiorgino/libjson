@@ -165,6 +165,12 @@ class json final {
     // ---------- capacity ----------
 
     /**
+     * @brief Checks wether the container is empty. If the stored value is not
+     * a container returns false, if no value is being stored returns true
+     */
+    [[nodiscard]] auto empty(void) const noexcept -> bool;
+
+    /**
      * @brief Returns the number of elements. If the stored value is not
      * a container returns 1, if no value is being stored returns 0
      */
