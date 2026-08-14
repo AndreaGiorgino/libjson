@@ -20,6 +20,7 @@ set(
     TestObjectInsertData.cxx
     TestSize.cxx
     TestEmpty.cxx
+    TestContains.cxx
 
     # json decoding
     TestDecodeEmpty.cxx
