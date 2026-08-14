@@ -2,10 +2,6 @@
 
 JSON interface library in Cpp23
 
-> [!IMPORTANT]
-> Since this library is still in development, it may not work correctly or some
-> functionalities might be missing
-
 ## Build
 
 ### Requirements
