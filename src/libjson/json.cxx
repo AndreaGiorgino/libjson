@@ -43,6 +43,20 @@ auto json::operator =(json&& rhs) -> json& {
     return *this;
 }
 
+auto json::size(void) const noexcept -> std::size_t {
+    if (!_hasValue) return 0;
+    return std::visit(
+        [](const auto& val) -> bool {
+            using clean_t = std::remove_cvref_t<decltype(val)>;
+
+            if constexpr (std::same_as<clean_t, object_ptr_t>
+                          || std::same_as<clean_t, array_ptr_t>)
+                return val->size();
+            return 1;
+        },
+        _value);
+}
+
 auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }

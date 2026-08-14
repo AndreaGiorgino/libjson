@@ -162,6 +162,16 @@ class json final {
     ~json(void) = default;
 
    public: // methods
+    // ---------- capacity ----------
+
+    /**
+     * @brief Returns the number of elements. If the stored value is not
+     * a container returns 1, if no value is being stored returns 0
+     */
+    [[nodiscard]] auto size(void) const noexcept -> std::size_t;
+
+    // ------------------------------
+
     // ----------- lookup -----------
 
     /**
