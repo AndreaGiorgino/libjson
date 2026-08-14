@@ -244,8 +244,12 @@ class json final {
     }
 
     /**
+     * @brief Check wether the container contains element with specific key. If
+     * the value being stored is not an object value return false
      *
+     * @param key The key to check
      */
+    [[nodiscard]] auto contains(std::string_view key) const noexcept -> bool;
 
     /**
      * @brief Get a reference to the element in the stored array at the

@@ -75,6 +75,18 @@ auto json::has_value(void) const noexcept -> bool {
     return _hasValue;
 }
 
+auto json::contains(std::string_view key) const noexcept -> bool {
+    if (!_hasValue) return false;
+    return std::visit(
+        [&key](const auto& val) -> bool {
+            using clean_t = std::remove_cvref_t<decltype(val)>;
+
+            if constexpr (std::same_as<clean_t, object_ptr_t>)
+                return val->contains(std::string {key});
+            return false;
+        },
+        _value);
+}
 
 auto json::at(std::size_t index) const -> const json& {
     if (!_hasValue) throw std::runtime_error("No value is being stored");
