@@ -162,14 +162,32 @@ class json final {
     ~json(void) = default;
 
    public: // methods
+    // ---------- capacity ----------
+
     /**
-     * @brief Check if a value is being stored
+     * @brief Check wether the container is empty. If the stored value is not
+     * a container returns false, if no value is being stored returns true
+     */
+    [[nodiscard]] auto empty(void) const noexcept -> bool;
+
+    /**
+     * @brief Returns the number of elements. If the stored value is not
+     * a container returns 1, if no value is being stored returns 0
+     */
+    [[nodiscard]] auto size(void) const noexcept -> std::size_t;
+
+    // ------------------------------
+
+    // ----------- lookup -----------
+
+    /**
+     * @brief Check wether a value is being stored
      * @return The result of the check
      */
     [[nodiscard]] auto has_value(void) const noexcept -> bool;
 
     /**
-     * @brief Get the stored value as Tp if possible (primitive)
+     * @brief Get the stored value as Tp or throws (primitive)
      *
      * @tparam Tp The target type
      * @return The stored value of type Tp
@@ -187,7 +205,7 @@ class json final {
     }
 
     /**
-     * @brief Get the stored value as Tp if possible (pointer allocated)
+     * @brief Get the stored value as Tp or throws (pointer allocated)
      *
      * @tparam Tp The target type
      * @return The stored value of type Tp
@@ -209,7 +227,7 @@ class json final {
     }
 
     /**
-     * @brief Check if a value of type Tp is being hold
+     * @brief Check wether a value of type Tp is being hold
      *
      * @tparam Tp The type to check
      * @return The result of the check
@@ -226,8 +244,17 @@ class json final {
     }
 
     /**
-     * @brief Get a reference to the element in the stored array at the
-     * specified location
+     * @brief Check wether the container contains an element with the
+     * specificied key. If the value being stored is not an object value return
+     * false
+     *
+     * @param key The key to check
+     */
+    [[nodiscard]] auto contains(std::string_view key) const noexcept -> bool;
+
+    /**
+     * @brief Get a const reference to the element in the stored array at the
+     * specified location or throws
      *
      * @param index The position of the element
      * @return The reference to the element
@@ -236,92 +263,11 @@ class json final {
      * @throws std::bad_variant_access If the stored value is not an array
      * @throws std::out_of_range If the location exceeds the bounds of the array
      */
-    [[nodiscard]] auto at(std::size_t index) const -> const json& {
-        if (!_hasValue)
-            throw std::runtime_error("No value is being stored");
-        else
-            return std::get<array_ptr_t>(_value)->at(index);
-    }
+    [[nodiscard]] auto at(std::size_t index) const -> const json&;
 
     /**
-     * @brief Get a reference to the element in the stored array at the
-     * specified location
-     *
-     * @param index The position of the element
-     * @return The reference to the element
-     *
-     * @throws std::runtime_error If no value is being stored
-     * @throws std::bad_variant_access If the stored value is not an array
-     * @throws std::out_of_range If the location exceeds the bounds of the array
-     */
-    [[nodiscard]] auto operator [](std::size_t index) -> json& {
-        if (!_hasValue)
-            throw std::runtime_error("No value is being stored");
-        else
-            return std::get<array_ptr_t>(_value)->at(index);
-    }
-
-    /**
-     * @brief Copy data to the end of the stored array
-     *
-     * @param node The data to add
-     */
-    auto push_back(const json& node) -> void {
-        if (!_hasValue) {
-            _hasValue = true;
-            _value    = std::make_unique<array_t>(array_t {});
-        }
-
-        if (!holds_alternative<array_t>()) {
-            auto buffer {std::visit(
-                [](auto& node) -> json {
-                    using Tp = decltype(node);
-
-                    if constexpr (requires(Tp x) { *x; })
-                        return {*node};
-                    else
-                        return {node};
-                },
-                _value)};
-
-            _value = std::make_unique<array_t>(array_t {std::move(buffer)});
-        }
-
-        std::get<array_ptr_t>(_value)->push_back(node);
-    }
-
-    /**
-     * @brief Move data to the end of the stored array
-     *
-     * @param node The data to add
-     */
-    auto push_back(json&& node) -> void {
-        if (!_hasValue) {
-            _hasValue = true;
-            _value    = std::make_unique<array_t>(array_t {});
-        }
-
-        if (!holds_alternative<array_t>()) {
-            auto buffer {std::visit(
-                [](auto& node) -> json {
-                    using Tp = decltype(node);
-
-                    if constexpr (requires(Tp x) { *x; })
-                        return {*node};
-                    else
-                        return {node};
-                },
-                _value)};
-
-            _value = std::make_unique<array_t>(array_t {std::move(buffer)});
-        }
-
-        std::get<array_ptr_t>(_value)->push_back(std::move(node));
-    }
-
-    /**
-     * @brief Get a reference to the element in the stored object with the
-     * specified key
+     * @brief Get a const reference to the element in the stored object with the
+     * specified key or throws
      *
      * @param key The key of the element
      * @return The reference to the element
@@ -331,33 +277,55 @@ class json final {
      * @throws std::out_of_range If the object does not have an element with the
      * specified key
      */
-    [[nodiscard]] auto at(std::string_view key) const -> const json& {
-        if (!_hasValue)
-            throw std::runtime_error("No value is being stored");
-        else
-            return std::get<object_ptr_t>(_value)->at(std::string {key});
-    }
+    [[nodiscard]] auto at(std::string_view key) const -> const json&;
+
+    // ------------------------------
+
+    // --------- modifiers ----------
+
+    /**
+     * @brief Get a reference to the element in the stored array at the
+     * specified location or throws
+     *
+     * @param index The position of the element
+     * @return The reference to the element
+     *
+     * @throws std::runtime_error If no value is being stored
+     * @throws std::bad_variant_access If the stored value is not an array
+     * @throws std::out_of_range If the location exceeds the bounds of the array
+     */
+    [[nodiscard]] auto operator [](std::size_t index) -> json&;
 
     /**
      * @brief Get a reference to the element in the stored object with the
-     * specified key. Insert it if it does not exist
+     * specified key. Convert to an object value if a value is not being
+     * stored. Insert the element if it does not exist and an object is being
+     * stored
      *
      * @param key The key of the element
      * @return The reference to the element
      *
-     * @throws std::runtime_error If no value is being stored
      * @throws std::bad_variant_access If the stored value is not an object
      * @throws std::out_of_range If the object does not have an element with the
      * specified key
      */
-    [[nodiscard]] auto operator [](std::string_view key) -> json& {
-        if (!_hasValue) {
-            _hasValue = true;
-            _value    = std::make_unique<object_t>(object_t {});
-        }
+    [[nodiscard]] auto operator [](std::string_view key) -> json&;
 
-        return (*std::get<object_ptr_t>(_value))[std::string {key}];
-    }
+    /**
+     * @brief Copy data to the end of the stored array. Convert to an array
+     * value if the value being stored is not an array
+     *
+     * @param node The data to add
+     */
+    auto push_back(const json& node) -> void;
+
+    /**
+     * @brief Move data to the end of the stored array. Convert to an array
+     * value if the value being stored is not an array
+     *
+     * @param node The data to add
+     */
+    auto push_back(json&& node) -> void;
 
     /**
      * @brief Copy data to the stored object
@@ -368,20 +336,7 @@ class json final {
      * @throws std::runtime_error If the key already exists
      * @throws std::bad_variant_access If the stored value is not an object
      */
-    auto insert(std::string_view key, const json& node) -> void {
-        if (!_hasValue) {
-            _hasValue = true;
-            _value    = std::make_unique<object_t>(object_t {});
-        }
-
-        const std::string str {key};
-        auto& ptr {std::get<object_ptr_t>(_value)};
-
-        if (ptr->contains(str))
-            throw std::runtime_error(
-                std::format("Key already present in object: {}", key));
-        ptr->insert({str, node});
-    }
+    auto insert(std::string_view key, const json& node) -> void;
 
     /**
      * @brief Move data to the stored object
@@ -392,29 +347,30 @@ class json final {
      * @throws std::runtime_error If the key already exists
      * @throws std::bad_variant_access If the stored value is not an object
      */
-    auto insert(std::string_view key, json&& node) -> void {
-        if (!_hasValue) {
-            _hasValue = true;
-            _value    = std::make_unique<object_t>(object_t {});
-        }
+    auto insert(std::string_view key, json&& node) -> void;
 
-        const std::string str {key};
-        auto& ptr {std::get<object_ptr_t>(_value)};
+    // ------------------------------
 
-        if (ptr->contains(str))
-            throw std::runtime_error(
-                std::format("Key already present in object: {}", key));
-        ptr->insert({str, std::move(node)});
-    }
+    // ----------- print ------------
 
     /**
-     * @brief Encode the stored value into json
+     * @brief Encode the stored value to a stream
      *
      * @param indent The amount of spaces to use for indentation
      */
     [[nodiscard]] auto encode(std::size_t indent = 4) const -> std::string;
 
-    friend auto operator <<(std::ostream& os, const json& node) -> std::ostream&;
+    /**
+     * @brief Encode the stored value to a stream. The setw operator has been
+     * overridden to represent indentation
+     *
+     * @param os The output stream
+     * @param node The input node
+     */
+    friend auto operator <<(std::ostream& os, const json& node)
+        -> std::ostream&;
+
+    // ------------------------------
 
    private: // definitions
     /*
