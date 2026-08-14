@@ -79,9 +79,46 @@ auto main(int, char**) -> int {
 
 > Look at [example](example) for more
 
+## Quick reference
+
+### Capacity
+
+Method | Brief
+:----- | :-----
+`empty` | Checks wether the container is empty (more in definition)
+`size`  | Returns the number of elements (more in definition)
+
+### Lookup
+
+Method | Brief
+:----- | :-----
+`as` (template)                | Get the stored value as the target type or throws
+`at`                           | Get a const reference to the element in the container or throws
+`contains`                     | Check whether the container contains an element with the specified key (more in definition)
+`has_value`                    | Checks wether a value is being stored
+`holds_alternative` (template) | Checks wether the a value of the target type is being stored
+
+### Modifiers
+
+Method | Brief
+:----- | :-----
+`operator[]` | Get a reference to the element in the container (more in definition)
+`push_back`  | Add data to the stored array (more in definition)
+`insert`     | Add data to the stored object
+
+### Decoding/Encoding
+
+Method | Brief
+:----- | :----
+`libjson::decode`            | Decode a stream/string
+`libjson::json::encode`      | Encode the stored value to a string
+`libjson::json::operator <<` | Encode the stored value to a stream (more in definition)
+
 ## Missing features
 
 - Number parsing:
     - Handle long numbers
     - Handle exponent
     - Handle positive exponent
+- String parsing:
+    - Handle double unicode sequence
