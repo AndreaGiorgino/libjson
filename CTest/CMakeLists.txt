@@ -19,6 +19,7 @@ set(
     TestObjectAccessOperator.cxx
     TestObjectInsertData.cxx
     TestSize.cxx
+    TestEmpty.cxx
 
     # json decoding
     TestDecodeEmpty.cxx
