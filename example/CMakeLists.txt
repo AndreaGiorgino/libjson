@@ -1,6 +1,23 @@
 cmake_minimum_required(VERSION 3.24)
 
 #
+# Dependencies
+#
+
+# Importing with FetchContent:
+
+# include(FetchContent)
+# 
+# FetchContent_Declare(
+#     libjson
+#     GIT_REPOSITORY git@github.com:AndreaGiorgino/libjson
+#     GIT_TAG 1.0.0
+#     GIT_SHALLOW TRUE
+# )
+# 
+# FetchContent_MakeAvailable(libjson)
+
+#
 # Target
 #
 
@@ -34,5 +51,5 @@ target_include_directories(
 
 target_link_libraries(
     example
-    PRIVATE ${PROJECT_NAME}
+    PRIVATE libjson
 )
