@@ -4,23 +4,9 @@
 
 #include "libjson/json.hxx"
 #include "libjson/parse_error.hxx"
+#include "libjson/extra/decode.hxx"
 
 namespace libjson {
-auto encode(json&& el) -> std::string {
-    // TODO: not implemented yet
-    (void)el;
-    throw;
-}
-
-auto encode(json&& el, std::ostream& os) -> void {
-    // TODO: not implemented yet
-    (void)el;
-    (void)os;
-    throw;
-}
-
-// ----------------------------------------------------------------------------
-
 /**
  * @brief Throw if EOF is encountered
  *
