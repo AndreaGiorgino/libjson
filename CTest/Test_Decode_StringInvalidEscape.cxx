@@ -1,14 +1,15 @@
+#include <libjson/json.hxx>
+#include <libjson/parse_error.hxx>
 #include <sstream>
 
-#include "libjson/extra/decode.hxx"
-#include "libjson/parse_error.hxx"
+using libjson::json;
 
-auto TestDecodeStringInvalidEscape(int, char**) -> int {
+auto Test_Decode_StringInvalidEscape(int, char**) -> int {
     // parse_error
     /// invalid escape sequence
     try {
         auto ss {std::stringstream {R"("\v")"}};
-        (void)libjson::decode(ss);
+        (void)json::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {
@@ -18,7 +19,7 @@ auto TestDecodeStringInvalidEscape(int, char**) -> int {
     /// invalid unicode
     try {
         auto ss {std::stringstream {R"("\uXXXX")"}};
-        (void)libjson::decode(ss);
+        (void)json::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {

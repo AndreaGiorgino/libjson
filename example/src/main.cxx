@@ -1,10 +1,9 @@
 #include <iomanip>
 #include <iostream>
+#include <libjson/json.hxx>
 #include <print>
 
-#include "libjson/extra/decode.hxx"
-
-using namespace libjson;
+using libjson::json;
 
 auto main(int, char**) -> int {
     const char* raw {R"(
@@ -17,7 +16,7 @@ auto main(int, char**) -> int {
     }
     )"};
 
-    auto node {libjson::decode(raw)};
+    auto node {json::decode(raw)};
 
     // encode to string
     std::println("{:-^30}", "[String encode]");
@@ -27,10 +26,12 @@ auto main(int, char**) -> int {
     std::println("{:-^30}", "[Ostream insert]");
     std::cout << std::setw(4) << node << "\n\n";
 
-    // example usage
-    std::println("{:-^30}", "[Example usage]");
-    std::cout << node["name"] << " from " << node["city"]["name"] << ", is "
-              << node["age"] << " years old." << std::endl;
+    // chain insert
+    node["city"]["coordinates"]["lat"] = 51.52817792811963;
+    node["city"]["coordinates"]["lon"] = -0.13045990894445286;
+
+    std::println("{:-^30}", "[Ostream insert (updated)]");
+    std::cout << std::setw(4) << node << "\n\n";
 
     return 0;
 }

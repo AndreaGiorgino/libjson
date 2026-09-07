@@ -1,11 +1,12 @@
 #include <sstream>
+#include <libjson/json.hxx>
 
-#include "libjson/extra/decode.hxx"
+using libjson::json;
 
-auto TestDecodeEmpty(int, char**) -> int {
+auto Test_Decode_Empty(int, char**) -> int {
     std::stringstream ss {};
 
-    const auto el {libjson::decode(ss)};
+    const auto el {json::decode(ss)};
     if (el.has_value()) throw std::runtime_error("Unexpected content");
 
     return 0;

@@ -1,13 +1,14 @@
+#include <libjson/json.hxx>
+#include <libjson/parse_error.hxx>
 #include <sstream>
 
-#include "libjson/parse_error.hxx"
-#include "libjson/extra/decode.hxx"
+using libjson::json;
 
-auto TestDecodeInvalidLiteral(int, char**) -> int {
+auto Test_Decode_InvalidLiteral(int, char**) -> int {
     std::stringstream ss {"test"};
 
     try {
-        (void)libjson::decode(ss);
+        (void)json::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <format>
 #include <memory>
 #include <unordered_map>
 #include <variant>
@@ -72,6 +71,26 @@ constexpr bool ptr_allocated_v = ptr_allocated_t<Tp>::value;
 class json final {
    public: // ctors
     json(void) = default;
+
+    /**
+     * @brief Decode json from stream
+     *
+     * @param is The input stream
+     * @return The encoded std::string_view as json
+     *
+     * @throws parse_error If the stream is malformed
+     */
+    [[nodiscard]] static auto decode(std::istream& is) -> json;
+
+    /**
+     * @brief Decode json from raw string
+     *
+     * @param raw The input raw json
+     * @return The encoded std::string_view as json
+     *
+     * @throws parse_error If the stream is malformed
+     */
+    [[nodiscard]] static auto decode(std::string_view raw) -> json;
 
     // ------------ copy ------------
 
@@ -348,6 +367,11 @@ class json final {
      * @throws std::bad_variant_access If the stored value is not an object
      */
     auto insert(std::string_view key, json&& node) -> void;
+
+    /**
+     * @brief Clear the stored value
+     */
+    auto clear(void) noexcept -> void;
 
     // ------------------------------
 

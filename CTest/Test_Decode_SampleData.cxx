@@ -1,11 +1,11 @@
 #include <fstream>
 
 #include "helpers.hxx"
-#include "libjson/extra/decode.hxx"
 
+using libjson::json;
 using libjson::object_t;
 
-auto TestDecodeSampleData(int, char**) -> int {
+auto Test_Decode_SampleData(int, char**) -> int {
     const object_t expected {
         {"lastName",  "ABBING"    },
         {"firstName", "Mr Anthony"},
@@ -17,18 +17,18 @@ auto TestDecodeSampleData(int, char**) -> int {
 
     std::ifstream ifs {"TestFiles/titanic-passengers.json"};
 
-    const auto node {libjson::decode(ifs)};
+    const auto node {json::decode(ifs)};
 
-    helpers::check_eq<std::string>(
+    helpers::checkEq<std::string>(
         node.at(0).at("lastName"), expected.at("lastName"));
-    helpers::check_eq<std::string>(
+    helpers::checkEq<std::string>(
         node.at(0).at("firstName"), expected.at("firstName"));
-    helpers::check_eq<std::string>(node.at(0).at("age"), expected.at("age"));
-    helpers::check_eq<std::string>(
+    helpers::checkEq<std::string>(node.at(0).at("age"), expected.at("age"));
+    helpers::checkEq<std::string>(
         node.at(0).at("paxClass"), expected.at("paxClass"));
-    helpers::check_eq<bool>(
+    helpers::checkEq<bool>(
         node.at(0).at("passenger"), expected.at("passenger"));
-    helpers::check_eq<bool>(node.at(0).at("survivor"), expected.at("survivor"));
+    helpers::checkEq<bool>(node.at(0).at("survivor"), expected.at("survivor"));
 
     return 0;
 }

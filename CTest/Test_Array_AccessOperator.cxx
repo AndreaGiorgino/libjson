@@ -1,9 +1,9 @@
-#include "libjson/json.hxx"
+#include <libjson/json.hxx>
 
 using libjson::json;
 using libjson::array_t;
 
-auto TestArrayAccessOperator(int, char**) -> int {
+auto Test_Array_AccessOperator(int, char**) -> int {
     // bad_variant_access
     try {
         (void)json {69}[0];

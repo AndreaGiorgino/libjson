@@ -45,35 +45,7 @@ cmake -B build \
 
 ## Usage
 
-```cpp
-#include <iostream>
-
-#include "libjson/extra/decode.hxx"
-
-using namespace libjson;
-
-auto main(int, char**) -> int {
-    const char* raw {R"(
-    {
-        "name": "John Smith",
-        "age": 25,
-        "city": {
-            "name": "London"
-        }
-    }
-    )"};
-
-    auto node {libjson::decode(raw)};
-
-    // example usage
-    std::cout << node["name"] << " from " << node["city"]["name"] << ", is "
-              << node["age"] << " years old." << std::endl;
-
-    return 0;
-}
-```
-
-> Look at [example](example) for more
+Look at [example](example) for an example usage
 
 ## Quick reference
 
@@ -101,12 +73,13 @@ Method | Brief
 `operator[]` | Get a reference to the element in the container (more in definition)
 `push_back`  | Add data to the stored array (more in definition)
 `insert`     | Add data to the stored object
+`clear`      | Clear the stored value
 
 ### Decoding/Encoding
 
 Method | Brief
 :----- | :----
-`libjson::decode`            | Decode a stream/string
+`libjson::json::decode`      | Decode a stream/string
 `libjson::json::encode`      | Encode the stored value to a string
 `libjson::json::operator <<` | Encode the stored value to a stream (more in definition)
 

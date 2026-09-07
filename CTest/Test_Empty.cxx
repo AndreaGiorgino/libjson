@@ -1,10 +1,10 @@
-#include "libjson/json.hxx"
+#include <libjson/json.hxx>
 
 using libjson::array_t;
 using libjson::json;
 using libjson::object_t;
 
-auto TestEmpty(int, char**) -> int {
+auto Test_Empty(int, char**) -> int {
     if (json {}.empty() != true)
         throw std::runtime_error("Values not equals");
     else if (json {0}.empty() != false)
