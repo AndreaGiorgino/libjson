@@ -1,7 +1,7 @@
 BasedOnStyle: Google
 IndentWidth: 4
 
-AlignAfterOpenBracket: false
+AlignAfterOpenBracket: true
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: true
 AlignConsecutiveBitFields: true
@@ -16,9 +16,9 @@ AlignTrailingComments: true
 AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Inline
-AllowShortLoopsOnASingleLine: true
+AllowShortLoopsOnASingleLine: false
 
 AlwaysBreakBeforeMultilineStrings: true
 
