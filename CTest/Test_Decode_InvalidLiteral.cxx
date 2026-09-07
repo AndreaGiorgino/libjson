@@ -4,7 +4,7 @@
 
 using libjson::json;
 
-auto TestDecodeInvalidLiteral(int, char**) -> int {
+auto Test_Decode_InvalidLiteral(int, char**) -> int {
     std::stringstream ss {"test"};
 
     try {

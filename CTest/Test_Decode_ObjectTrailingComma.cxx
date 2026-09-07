@@ -4,8 +4,12 @@
 
 using libjson::json;
 
-auto TestDecodeArrayUnclosed(int, char**) -> int {
-    std::stringstream ss {"["};
+auto Test_Decode_ObjectTrailingComma(int, char**) -> int {
+    std::stringstream ss {R"(
+        {
+            "test": null,
+        }
+    )"};
 
     try {
         (void)json::decode(ss);

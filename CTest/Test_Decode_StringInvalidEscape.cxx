@@ -4,7 +4,7 @@
 
 using libjson::json;
 
-auto TestDecodeStringInvalidEscape(int, char**) -> int {
+auto Test_Decode_StringInvalidEscape(int, char**) -> int {
     // parse_error
     /// invalid escape sequence
     try {

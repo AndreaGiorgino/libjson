@@ -4,7 +4,7 @@ using libjson::array_t;
 using libjson::json;
 using libjson::object_t;
 
-auto TestContains(int, char**) -> int {
+auto Test_Object_Contains(int, char**) -> int {
     if (json {}.contains("") != false)
         throw std::runtime_error("Values not equals");
     else if (json {0}.contains("") != false)

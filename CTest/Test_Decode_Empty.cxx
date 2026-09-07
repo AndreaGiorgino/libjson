@@ -3,7 +3,7 @@
 
 using libjson::json;
 
-auto TestDecodeEmpty(int, char**) -> int {
+auto Test_Decode_Empty(int, char**) -> int {
     std::stringstream ss {};
 
     const auto el {json::decode(ss)};

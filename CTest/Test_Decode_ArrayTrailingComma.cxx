@@ -4,12 +4,8 @@
 
 using libjson::json;
 
-auto TestDecodeObjectInvalidKey(int, char**) -> int {
-    std::stringstream ss {R"(
-        {
-            0: null,
-        }
-    )"};
+auto Test_Decode_ArrayTrailingComma(int, char**) -> int {
+    std::stringstream ss {"[null,]"};
 
     try {
         (void)json::decode(ss);

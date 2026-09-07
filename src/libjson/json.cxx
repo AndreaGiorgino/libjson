@@ -578,6 +578,11 @@ auto json::insert(std::string_view key, json&& node) -> void {
     ptr->insert({str, std::move(node)});
 }
 
+auto json::clear(void) noexcept -> void {
+    _hasValue = false;
+    _value    = {};
+}
+
 auto json::encode(std::size_t indent) const -> std::string {
     return _encode_recursive(*this, indent, 0);
 }

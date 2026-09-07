@@ -1,6 +1,5 @@
 #pragma once
 
-#include <format>
 #include <memory>
 #include <unordered_map>
 #include <variant>
@@ -368,6 +367,11 @@ class json final {
      * @throws std::bad_variant_access If the stored value is not an object
      */
     auto insert(std::string_view key, json&& node) -> void;
+
+    /**
+     * @brief Clear the stored value
+     */
+    auto clear(void) noexcept -> void;
 
     // ------------------------------
 

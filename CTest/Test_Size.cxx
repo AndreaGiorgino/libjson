@@ -4,18 +4,18 @@ using libjson::array_t;
 using libjson::json;
 using libjson::object_t;
 
-auto TestEmpty(int, char**) -> int {
-    if (json {}.empty() != true)
+auto Test_Size(int, char**) -> int {
+    if (json {}.size() != 0)
         throw std::runtime_error("Values not equals");
-    else if (json {0}.empty() != false)
+    else if (json {0}.size() != 1)
         throw std::runtime_error("Values not equals");
-    else if (json {array_t {}}.empty() != true)
+    else if (json {array_t {}}.size() != 0)
         throw std::runtime_error("Values not equals");
-    else if (json {object_t {}}.empty() != true)
+    else if (json {object_t {}}.size() != 0)
         throw std::runtime_error("Values not equals");
-    else if (json {array_t {0}}.empty() != false)
+    else if (json {array_t {0}}.size() != 1)
         throw std::runtime_error("Values not equals");
-    else if (json {object_t {{"key", 0}}}.empty() != false)
+    else if (json {object_t {{"key", 0}}}.size() != 1)
         throw std::runtime_error("Values not equals");
 
     return 0;

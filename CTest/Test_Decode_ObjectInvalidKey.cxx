@@ -4,8 +4,12 @@
 
 using libjson::json;
 
-auto TestDecodeObjectUnclosed(int, char**) -> int {
-    std::stringstream ss {"{"};
+auto Test_Decode_ObjectInvalidKey(int, char**) -> int {
+    std::stringstream ss {R"(
+        {
+            0: null,
+        }
+    )"};
 
     try {
         (void)json::decode(ss);

@@ -5,13 +5,13 @@
 
 using libjson::json;
 
-auto TestDecodeSingleValue(int, char**) -> int {
+auto Test_Decode_SingleValue(int, char**) -> int {
     const std::string expected {"json"};
 
     std::stringstream ss {R"("json")"};
 
     const auto el {json::decode(ss)};
-    helpers::check_eq(el, expected);
+    helpers::checkEq(el, expected);
 
     return 0;
 }
