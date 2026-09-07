@@ -1,5 +1,6 @@
+#include <libjson/json.hxx>
+
 #include "helpers.hxx"
-#include "libjson/json.hxx"
 
 using libjson::json;
 using libjson::object_t;
@@ -14,7 +15,7 @@ auto TestObjectAccessOperator(int, char**) -> int {
 
     // access non-existing key
     /// object initialised
-    json el1 {object_t{}};
+    json el1 {object_t {}};
     el1["number"] = expected;
     helpers::check_eq(el1.at("number"), expected);
 

@@ -1,4 +1,4 @@
-#include "libjson/parse_error.hxx"
+#include <libjson/parse_error.hxx>
 
 namespace libjson {
 parse_error::parse_error(std::string_view message) : _message(message.data()) {}

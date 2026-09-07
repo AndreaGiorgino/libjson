@@ -73,6 +73,26 @@ class json final {
    public: // ctors
     json(void) = default;
 
+    /**
+     * @brief Decode json from stream
+     *
+     * @param is The input stream
+     * @return The encoded std::string_view as json
+     *
+     * @throws parse_error If the stream is malformed
+     */
+    [[nodiscard]] static auto decode(std::istream& is) -> json;
+
+    /**
+     * @brief Decode json from raw string
+     *
+     * @param raw The input raw json
+     * @return The encoded std::string_view as json
+     *
+     * @throws parse_error If the stream is malformed
+     */
+    [[nodiscard]] static auto decode(std::string_view raw) -> json;
+
     // ------------ copy ------------
 
     json(const json& rhs);

@@ -1,7 +1,9 @@
+#include <libjson/json.hxx>
 #include <sstream>
 
 #include "helpers.hxx"
-#include "libjson/extra/decode.hxx"
+
+using libjson::json;
 
 using std::string_literals::operator ""s;
 
@@ -20,7 +22,7 @@ auto TestDecodeStringEscape(int, char**) -> int {
     }
     )"};
 
-    const auto node {libjson::decode(ss)};
+    const auto node {json::decode(ss)};
     helpers::check_eq(node.at("quote"), "\""s);
     helpers::check_eq(node.at("backslash"), "\\"s);
     helpers::check_eq(node.at("forwardSlash"), "/"s);

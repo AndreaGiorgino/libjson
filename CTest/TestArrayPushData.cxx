@@ -1,8 +1,9 @@
-#include "helpers.hxx"
-#include "libjson/json.hxx"
+#include <libjson/json.hxx>
 
-using libjson::json;
+#include "helpers.hxx"
+
 using libjson::array_t;
+using libjson::json;
 
 auto TestArrayPushData(int, char**) -> int {
     const std::string expected {"json"};

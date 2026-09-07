@@ -1,7 +1,8 @@
+#include <libjson/json.hxx>
+#include <libjson/parse_error.hxx>
 #include <sstream>
 
-#include "libjson/parse_error.hxx"
-#include "libjson/extra/decode.hxx"
+using libjson::json;
 
 auto TestDecodeObjectTrailingComma(int, char**) -> int {
     std::stringstream ss {R"(
@@ -11,7 +12,7 @@ auto TestDecodeObjectTrailingComma(int, char**) -> int {
     )"};
 
     try {
-        (void)libjson::decode(ss);
+        (void)json::decode(ss);
         throw;
     } catch (const libjson::parse_error&) {
     } catch (...) {

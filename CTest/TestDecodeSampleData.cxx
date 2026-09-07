@@ -1,8 +1,8 @@
 #include <fstream>
 
 #include "helpers.hxx"
-#include "libjson/extra/decode.hxx"
 
+using libjson::json;
 using libjson::object_t;
 
 auto TestDecodeSampleData(int, char**) -> int {
@@ -17,7 +17,7 @@ auto TestDecodeSampleData(int, char**) -> int {
 
     std::ifstream ifs {"TestFiles/titanic-passengers.json"};
 
-    const auto node {libjson::decode(ifs)};
+    const auto node {json::decode(ifs)};
 
     helpers::check_eq<std::string>(
         node.at(0).at("lastName"), expected.at("lastName"));

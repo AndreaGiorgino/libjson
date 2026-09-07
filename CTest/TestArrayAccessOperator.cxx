@@ -1,4 +1,4 @@
-#include "libjson/json.hxx"
+#include <libjson/json.hxx>
 
 using libjson::json;
 using libjson::array_t;

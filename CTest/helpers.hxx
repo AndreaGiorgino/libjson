@@ -1,6 +1,6 @@
 #pragma once
 
-#include "libjson/json.hxx"
+#include <libjson/json.hxx>
 
 namespace helpers {
 template <typename Tp>
