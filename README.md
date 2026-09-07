@@ -53,27 +53,27 @@ Look at [example](example) for an example usage
 
 Method | Brief
 :----- | :-----
-`empty` | Checks wether the container is empty (more in definition)
-`size`  | Returns the number of elements (more in definition)
+`libjson::json::empty` | Checks wether the container is empty (more in definition)
+`libjson::json::size`  | Returns the number of elements (more in definition)
 
 ### Lookup
 
 Method | Brief
 :----- | :-----
-`as` (template)                | Get the stored value as the target type or throws
-`at`                           | Get a const reference to the element in the container or throws
-`contains`                     | Check whether the container contains an element with the specified key (more in definition)
-`has_value`                    | Checks wether a value is being stored
-`holds_alternative` (template) | Checks wether the a value of the target type is being stored
+`libjson::json::as` (template)                | Get the stored value as the target type or throws
+`libjson::json::at`                           | Get a const reference to the element in the container or throws
+`libjson::json::contains`                     | Check whether the container contains an element with the specified key (more in definition)
+`libjson::json::has_value`                    | Check wether a value is being stored
+`libjson::json::holds_alternative` (template) | Check wether the a value of the target type is being stored
 
 ### Modifiers
 
 Method | Brief
 :----- | :-----
-`operator[]` | Get a reference to the element in the container (more in definition)
-`push_back`  | Add data to the stored array (more in definition)
-`insert`     | Add data to the stored object
-`clear`      | Clear the stored value
+`libjson::json::operator[]` | Get a reference to the element in the container (more in definition)
+`libjson::json::push_back`  | Add data to the stored array (more in definition)
+`libjson::json::insert`     | Add data to the stored object
+`libjson::json::clear`      | Clear the stored value
 
 ### Decoding/Encoding
 
